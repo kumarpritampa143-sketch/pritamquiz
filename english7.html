@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Set-7: Poetry & Grammar 🍂</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdfce8; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #854d0e, #ca8a04); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #fef08a; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #713f12; margin-bottom: 25px; line-height: 1.5; text-align: left; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #fefce8; border: 2px solid #fef08a; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #854d0e; }
+        .option-btn:hover { background: #fef9c3; transform: translateX(5px); border-color: #ca8a04; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #ca8a04; border-radius: 5px; text-align: left; font-size: 0.95em; color: #713f12; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #854d0e; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>English Set-7 🇬🇧</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #a16207; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>Nature Lover! 🍂</h1>
+        <div style="font-size: 3em; color: #854d0e; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #ca8a04; color: white; cursor: pointer; font-weight: bold;">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. Who wrote 'Now the Leaves are Falling Fast'?", options: ["W.H. Auden", "John Keats", "Rupert Brooke", "Walter de la Mare"], ans: 0, reason: "W.H. Auden won the Pulitzer Prize for his poetry." },
+        { q: "2. 'Ode to Autumn' is a poem by:", options: ["John Donne", "John Keats", "Walt Whitman", "W.B. Yeats"], ans: 1, reason: "John Keats is one of the greatest Romantic poets." },
+        { q: "3. W.H. Auden won the ______ Prize in 1948.", options: ["Nobel", "Pulitzer", "Booker", "None"], ans: 1, reason: "He won the Pulitzer Prize for his collection 'The Age of Anxiety'." },
+        { q: "4. Autumn is the season of 'mists and ______'.", options: ["Fruitfulness", "Cold", "Rain", "Snow"], ans: 0, reason: "The opening line of 'Ode to Autumn' describes it as a season of mists and mellow fruitfulness." },
+        { q: "5. In Auden's poem, 'leaves falling' symbolizes ______.", options: ["Happiness", "Human death/Aging", "Spring", "Wealth"], ans: 1, reason: "It suggests the process of human life moving towards death." },
+        { q: "6. Keats was a ______ poet.", options: ["War", "Romantic", "Metaphysical", "Modern"], ans: 1, reason: "Romantic poets emphasized nature, emotions, and beauty." },
+        { q: "7. The ______ are 'whispering neighbours' in Auden's poem.", options: ["Friends", "Messengers of death", "Enemies", "Birds"], ans: 1, reason: "They represent the agents of death that separate us from real delight." },
+        { q: "8. In Autumn, the ______ conspires with the season to load vines with fruit.", options: ["Moon", "Sun", "Wind", "Rain"], ans: 1, reason: "Autumn and the sun are described as close-bosom friends." },
+        { q: "9. 'Trolls run scolding for their food' is a line from ______.", options: ["Song of Myself", "Now the Leaves are Falling Fast", "Fire-Hymn", "Snake"], ans: 1, reason: "Auden uses the image of hungry trolls to show the harshness of life." },
+        { q: "10. John Keats died of ______ at a very young age.", options: ["Cancer", "Tuberculosis", "Cholera", "Smallpox"], ans: 1, reason: "He died at the age of 26 from TB." },
+        { q: "11. The 'Prrams' in Auden's poem are ______.", options: ["Singing", "Rolling on", "Stopping", "Flying"], ans: 1, reason: "The 'Prams go rolling on' represents the cycle of life continuing despite deaths." },
+        { q: "12. Each stanza of 'Ode to Autumn' has ______ lines.", options: ["10", "11", "12", "14"], ans: 1, reason: "Keats used an 11-line stanza structure for this ode." },
+        { q: "13. The 'Nightengale' is ______ in Auden's poem.", options: ["Singing", "Dumb", "Flying", "Happy"], ans: 1, reason: "The 'nightingale is dumb' signifies the loss of beauty and voice in hard times." },
+        { q: "14. Keats describes the 'songs of ______' as well as Autumn.", options: ["Winter", "Summer", "Spring", "Rain"], ans: 2, reason: "He asks 'Where are the songs of Spring?' but then says Autumn has its music too." },
+        { q: "15. Choose the correctly spelt word:", options: ["Autumn", "Autum", "Autumnn", "Atumn"], ans: 0, reason: "Standard spelling is 'Autumn'." },
+        { q: "16. Fill in the blank: He is ______ honest man.", options: ["a", "an", "the", "None"], ans: 1, reason: "'Honest' starts with a vowel sound 'o'." },
+        { q: "17. 'Old, White waterfall could bless / Travellers in their last ______.'", options: ["Sleep", "Distress", "Journey", "House"], ans: 1, reason: "Auden suggests death brings a cold, final blessing." },
+        { q: "18. Keats was interested in ______ more than anything else.", options: ["Politics", "Sports", "Poetry/Beauty", "Science"], ans: 2, reason: "His famous line is 'A thing of beauty is a joy forever'." },
+        { q: "19. Auden's poetry is often described as ______.", options: ["Simple", "Intellectual/Social", "Religious", "Funny"], ans: 1, reason: "His work deals with complex social and psychological issues." },
+        { q: "20. The ______ sits carelessly on a granary floor in Keats' poem.", options: ["Poet", "Autumn personified", "Farmer", "Bird"], ans: 1, reason: "Keats personifies Autumn as a woman sitting on the granary floor." },
+        { q: "21. 'Starving through the leafless wood' refers to the ______.", options: ["Birds", "Trolls", "Children", "Animals"], ans: 1, reason: "Line: 'Trolls run scolding for their food' in the leafless wood." },
+        { q: "22. Keats' poem 'Ode to Autumn' depicts the ______ of nature.", options: ["Anger", "Bounty/Maturity", "Cruelty", "Poverty"], ans: 1, reason: "It celebrates the ripeness and fulfillment of the harvest season." },
+        { q: "23. 'Nurse to the ______ shall not last.'", options: ["Baby", "Grave", "Flowers", "None"], ans: 1, reason: "Line: 'Nurses to the grave are gone'." },
+        { q: "24. Keats was a ______ poet.", options: ["Greek", "Latin", "Hellenistic/British", "Indian"], ans: 2, reason: "He was British but loved Greek mythology (Hellenism)." },
+        { q: "25. Change into Passive: 'I like it.'", options: ["It is liked by me", "It was liked by me", "It is like by me", "None"], ans: 0, reason: "Simple Present Passive: is + V3." },
+        { q: "26. Synonym of 'Mellow':", options: ["Harsh", "Soft/Ripe", "Hard", "Bitter"], ans: 1, reason: "Mellow means smooth, soft, or ripe." },
+        { q: "27. W.H. Auden was born in England but later moved to ______.", options: ["India", "America", "France", "Russia"], ans: 1, reason: "He became an American citizen later in life." },
+        { q: "28. 'Ode to Autumn' was written in ______.", options: ["1819", "1820", "1821", "1818"], ans: 0, reason: "1819 was Keats' 'Great Year' of Odes." },
+        { q: "29. The ______ are 'plucking' us from real delight.", options: ["Angels", "Whispering neighbours", "Friends", "None"], ans: 1, reason: "They represent death's interference." },
+        { q: "30. The ______ bleat in Keats' poem.", options: ["Cows", "Full-grown lambs", "Goats", "Dogs"], ans: 1, reason: "Line: 'Hedge-crickets sing; and now with treble soft / The red-breast whistles from a garden-croft'." },
+        { q: "31. Conjunction: Work hard ______ you will fail.", options: ["and", "but", "or", "so"], ans: 2, reason: "'Or' expresses an alternative or consequence." },
+        { q: "32. Choose the correctly spelt word:", options: ["Neighbor", "Neighbour", "Nabor", "Neighber"], ans: 1, reason: "Standard British English spelling is 'Neighbour'." },
+        { q: "33. Auden divides his poetic career into ______ phases.", options: ["British and American", "Indian and British", "Early and Late", "None"], ans: 0, reason: "He wrote significantly in both countries." },
+        { q: "34. 'Ode to Autumn' is a ______.", options: ["Sonnet", "Ode", "Elegy", "Ballad"], ans: 1, reason: "An Ode is a lyrical poem addressed to a particular subject." },
+        { q: "35. In Auden's poem, 'Cold, impossible, ahead' refers to the ______.", options: ["Rain", "Mountain/Death", "River", "Forest"], ans: 1, reason: "The mountain's white waterfall represents the finality of death." },
+        { q: "36. Keats' poetry is characterized by ______.", options: ["Sensuousness", "Logic", "War", "Politics"], ans: 0, reason: "He uses imagery that appeals strongly to all the senses." },
+        { q: "37. He ______ (be) reading for two hours.", options: ["is", "has been", "was", "were"], ans: 1, reason: "Duration with 'for' requires Present Perfect Continuous." },
+        { q: "38. Antonym of 'Fruitful':", options: ["Productive", "Barren/Unfruitful", "Rich", "None"], ans: 1, reason: "Barren is the opposite of productive or fruitful." },
+        { q: "39. The 'Angel' will ______ in Auden's poem.", options: ["Help", "Not come", "Sing", "Dance"], ans: 1, reason: "Line: 'And the angel will not come'." },
+        { q: "40. Autumn is the season of ______ fruitfulness.", options: ["Mellow", "Bitter", "Slow", "Fast"], ans: 0, reason: "Famous opening line adjective." },
+        { q: "41. Auden's 'Now the Leaves are Falling Fast' has a ______ tone.", options: ["Optimistic", "Pessimistic/Sorrowful", "Funny", "None"], ans: 1, reason: "It deals with the harsh reality of aging and death." },
+        { q: "42. 'Thou watchest the last oozings hours by hours' - this line is from ______.", options: ["Autumn", "Song of Myself", "The Soldier", "Snake"], ans: 0, reason: "Reference to the cider-press in Ode to Autumn." },
+        { q: "43. Choose the correct sentence:", options: ["I prefer tea than coffee", "I prefer tea to coffee", "I prefer tea for coffee", "None"], ans: 1, reason: "The verb 'prefer' is followed by 'to'." },
+        { q: "44. Give one word: 'A person who writes poems.'", options: ["Author", "Poet", "Novelist", "Dramatist"], ans: 1, reason: "Poet (कवि)." },
+        { q: "45. Auden won the Pulitzer in ______.", options: ["1947", "1948", "1949", "1950"], ans: 1, reason: "Historical fact mentioned in the author bio." },
+        { q: "46. In Keats' poem, the red-breast ______.", options: ["Sings", "Whistles", "Flies", "None"], ans: 1, reason: "Line: 'The red-breast whistles from a garden-croft'." },
+        { q: "47. 'Death's second self' is often used as a metaphor for ______.", options: ["Sleep", "Night", "Winter", "None"], ans: 0, reason: "Common literary metaphor (though not directly in these poems, it fits the theme)." },
+        { q: "48. He has been absent ______ yesterday.", options: ["for", "since", "from", "at"], ans: 1, reason: "Point of time requires 'since'." },
+        { q: "49. 'Gathering swallows twitter in the skies' is the ______ line of Ode to Autumn.", options: ["First", "Middle", "Last", "None"], ans: 2, reason: "The poem ends with this peaceful evening image." },
+        { q: "50. Pritam's English Progress:", options: ["Becoming a Poet! 🍂", "Loving Nature", "Almost there", "All of the above"], ans: 3, reason: "Brilliant! You've finished Set 7. Only 3 more to go for English!" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 Explanation: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

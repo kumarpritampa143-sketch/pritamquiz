@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Set-7: Area & Diff Equations 📐</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdfcea; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #854d0e, #ca8a04); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #fef08a; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #713f12; margin-bottom: 25px; line-height: 1.5; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #fefce8; border: 2px solid #fef08a; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #854d0e; }
+        .option-btn:hover { background: #fef9c3; transform: translateX(5px); border-color: #ca8a04; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #ca8a04; border-radius: 5px; text-align: left; font-size: 0.95em; color: #713f12; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #854d0e; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>Math Set-7 📐</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #a16207; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">अगला प्रश्न ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>कैल्कुलस मास्टर! 🎯</h1>
+        <div style="font-size: 3em; color: #854d0e; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #ca8a04; color: white; cursor: pointer; font-weight: bold;">दोबारा शुरू करें</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. अवकल समीकरण (d²y/dx²)³ + (dy/dx)² + sin(dy/dx) + 1 = 0 की घात (Degree) क्या है?", options: ["3", "2", "1", "अपरिभाषित"], ans: 3, reason: "चूंकि यहाँ sin(dy/dx) है, समीकरण बहुपद नहीं है, इसलिए घात अपरिभाषित है।" },
+        { q: "2. अवकल समीकरण d²y/dx² + 2(dy/dx)³ + 9y = 0 की कोटि (Order) क्या है?", options: ["1", "2", "3", "9"], ans: 1, reason: "उच्चतम अवकलज (Highest derivative) d²y/dx² है, अतः कोटि 2 है।" },
+        { q: "3. वक्र y² = 4ax और इसके नाभिलम्ब (Latus rectum) से घिरा क्षेत्रफल क्या है?", options: ["8/3 a²", "4/3 a²", "2/3 a²", "None"], ans: 0, reason: "0 से a तक समाकलन करने पर 2 * ∫2√(ax) dx = 8/3 a² प्राप्त होता है।" },
+        { q: "4. वृत्त x² + y² = a² का कुल क्षेत्रफल क्या होता है?", options: ["πa", "2πa", "πa²", "4πa²"], ans: 2, reason: "समाकलन विधि द्वारा प्राप्त मानक सूत्र।" },
+        { q: "5. अवकल समीकरण dy/dx = e^(x-y) का व्यापक हल क्या है?", options: ["eˣ + eʸ = C", "eˣ - eʸ = C", "eʸ - eˣ = C", "eˣ eʸ = C"], ans: 2, reason: "eʸ dy = eˣ dx करने पर eʸ = eˣ + C प्राप्त होता है।" },
+        { q: "6. परवलय y² = x, रेखाओं x=1, x=4 और x-अक्ष से घिरे क्षेत्र का क्षेत्रफल है:", options: ["14/3", "16/3", "7/3", "None"], ans: 0, reason: "∫[1 to 4] √x dx = [2/3 x^(3/2)]₁⁴ = 2/3(8-1) = 14/3." },
+        { q: "7. समघातीय अवकल समीकरण (Homogeneous Diff Eq) को हल करने के लिए क्या प्रतिस्थापित करते हैं?", options: ["x = vy", "y = vx", "y = v + x", "None"], ans: 1, reason: "y = vx रखने से समीकरण चर पृथक्करण (Variable separable) रूप में बदल जाता है।" },
+        { q: "8. अवकल समीकरण dy/dx + Py = Q का समाकलन गुणक (Integrating Factor - I.F.) क्या है?", options: ["e^(∫P dx)", "e^(∫Q dx)", "∫P dx", "None"], ans: 0, reason: "यह रैखिक अवकल समीकरण (Linear Differential Equation) का मानक सूत्र है।" },
+        { q: "9. दीर्घवृत्त x²/a² + y²/b² = 1 का क्षेत्रफल क्या है?", options: ["πa²", "πb²", "πab", "2πab"], ans: 2, reason: "मानक सूत्र।" },
+        { q: "10. अवकल समीकरण dy/dx = (1+y²)/(1+x²) का हल है:", options: ["tan⁻¹ y - tan⁻¹ x = C", "tan⁻¹ y + tan⁻¹ x = C", "y - x = C", "None"], ans: 0, reason: "dy/(1+y²) = dx/(1+x²) का समाकलन करने पर।" },
+        { q: "11. y = mx के कुल (Family) का अवकल समीकरण क्या है?", options: ["dy/dx = y/x", "dy/dx = x/y", "dy/dx = m", "None"], ans: 0, reason: "m = y/x को अवकलज में रखने पर।" },
+        { q: "12. वक्र y = cos x का x=0 से x=π/2 के बीच क्षेत्रफल है:", options: ["1", "2", "0", "π"], ans: 0, reason: "∫[0 to π/2] cos x dx = [sin x]₀^(π/2) = 1." },
+        { q: "13. रैखिक अवकल समीकरण dy/dx + y sec x = tan x का I.F. है:", options: ["sec x", "sec x + tan x", "tan x", "None"], ans: 1, reason: "e^(∫sec x dx) = e^(log|sec x + tan x|) = sec x + tan x." },
+        { q: "14. कोटि 3 वाले अवकल समीकरण के विशिष्ट हल (Particular solution) में स्वेच्छ अचरों की संख्या क्या है?", options: ["3", "2", "1", "0"], ans: 3, reason: "विशिष्ट हल में कोई भी स्वेच्छ अचर (Arbitrary constant) नहीं होता।" },
+        { q: "15. प्रथम चतुर्थांश में वृत्त x² + y² = 4 का क्षेत्रफल है:", options: ["π", "2π", "4π", "None"], ans: 0, reason: "कुल क्षेत्रफल πr² = 4π है, चतुर्थांश के लिए 1/4 * 4π = π." },
+        { q: "16. अवकल समीकरण dy/dx = y/x का हल प्रदर्शित करता है:", options: ["वृत्त", "परवलय", "मूल बिंदु से गुजरने वाली रेखाएं", "अतिपरवलय"], ans: 2, reason: "log y = log x + log C ⇒ y = Cx." },
+        { q: "17. वक्र y = x³ का x-अक्ष और कोटियों x=-2, x=1 के बीच कुल क्षेत्रफल क्या है?", options: ["-15/4", "15/4", "17/4", "None"], ans: 2, reason: "निरपेक्ष मानों का योग: |∫[-2 to 0] x³ dx| + |∫[0 to 1] x³ dx| = |-4| + |1/4| = 17/4." },
+        { q: "18. अवकल समीकरण (dy/dx)² + y = x की कोटि और घात क्रमशः हैं:", options: ["1, 2", "2, 1", "1, 1", "2, 2"], ans: 0, reason: "उच्चतम अवकलज dy/dx है (Order 1) और उसकी पावर 2 है (Degree 2)।" },
+        { q: "19. sin x + cos x का अधिकतम मान क्या है?", options: ["1", "2", "√2", "0"], ans: 2, reason: "√(1²+1²) = √2." },
+        { q: "20. x dy + y dx = 0 का हल है:", options: ["x + y = C", "xy = C", "x² + y² = C", "None"], ans: 1, reason: "d(xy) = 0 का समाकलन करने पर xy = C." },
+        { q: "21. वक्र y = x, x-अक्ष और x=2 के बीच क्षेत्रफल है:", options: ["2", "4", "1", "None"], ans: 0, reason: "त्रिभुज का क्षेत्रफल 1/2 * 2 * 2 = 2." },
+        { q: "22. I.F. = x वाली रैखिक समीकरण का रूप हो सकता है:", options: ["dy/dx + y/x = Q", "dy/dx - y/x = Q", "dy/dx + x/y = Q", "None"], ans: 0, reason: "e^(∫(1/x) dx) = e^(log x) = x." },
+        { q: "23. y-अक्ष, वक्र y = cos x और x = 0, x = π के बीच का क्षेत्रफल है:", options: ["1", "2", "0", "4"], ans: 1, reason: "0 से π/2 में 1 और π/2 से π में 1, कुल 2 (क्षेत्रफल हमेशा धनात्मक)।" },
+        { q: "24. अवकल समीकरण d²y/dx² = y का हल है:", options: ["y = Aeˣ + Be⁻ˣ", "y = Aeˣ", "y = sin x", "None"], ans: 0, reason: "यह एक मानक द्वितीय कोटि की रैखिक समीकरण है।" },
+        { q: "25. प्रथम कोटि और प्रथम घात के अवकल समीकरण को हल करने की कितनी प्रमुख विधियाँ हैं?", options: ["1", "2", "3", "4"], ans: 2, reason: "चर पृथक्करण, समघातीय और रैखिक विधि।" },
+        { q: "26. ∫[0 to 2π] |sin x| dx का मान है:", options: ["0", "2", "4", "None"], ans: 2, reason: "0 से π में 2 और π से 2π में भी 2 क्षेत्रफल, कुल 4." },
+        { q: "27. अवकल समीकरण dy/dx = 1 + x + y + xy का हल है:", options: ["log(1+y) = x + x²/2 + C", "y = x²", "log x = y", "None"], ans: 0, reason: "dy/dx = (1+x)(1+y) को चर पृथक्करण से हल करने पर।" },
+        { q: "28. वृत्त x² + y² = 1 और रेखा x + y = 1 के बीच छोटे क्षेत्र का क्षेत्रफल है:", options: ["π/4 - 1/2", "π/4", "1/2", "None"], ans: 0, reason: "चतुर्थांश के क्षेत्रफल (π/4) में से त्रिभुज (1/2) घटाने पर।" },
+        { q: "29. क्या sin(d²y/dx²) = x एक अवकल समीकरण है?", options: ["हाँ", "नहीं", "अधूरा है", "None"], ans: 0, reason: "इसमें स्वतंत्र चर, परतंत्र चर और अवकलज मौजूद हैं।" },
+        { q: "30. y² = 4x और x² = 4y के बीच उभयनिष्ठ क्षेत्रफल क्या है?", options: ["16/3", "8/3", "4/3", "None"], ans: 0, reason: "मानक परिणाम: 16ab/3 जहाँ a=1, b=1." },
+        { q: "31. अवकल समीकरण dy/dx + y/x = x² का I.F. क्या है?", options: ["x", "log x", "1/x", "eˣ"], ans: 0, reason: "P = 1/x, अतः I.F. = e^(∫1/x dx) = x." },
+        { q: "32. बिंदु (0, -2) से गुजरने वाले वक्र का समीकरण जिसकी ढाल x² + x है:", options: ["y = x³/3 + x²/2 - 2", "y = x² - 2", "y = x", "None"], ans: 0, reason: "dy = (x² + x) dx का समाकलन करके (0, -2) रखने पर।" },
+        { q: "33. रेखा y = 3x + 2, x-अक्ष और x = -1, x = 1 के बीच क्षेत्रफल है:", options: ["4", "13/3", "5", "None"], ans: 1, reason: "क्षेत्रफल को ऋणात्मक और धनात्मक भागों में तोड़कर जोड़ने पर।" },
+        { q: "34. अवकल समीकरण d³y/dx³ + y = 0 की घात क्या है?", options: ["1", "2", "3", "0"], ans: 0, reason: "उच्चतम अवकलज की घात 1 है।" },
+        { q: "35. वक्र y = √x और y = x के बीच क्षेत्रफल है:", options: ["1/2", "1/3", "1/6", "None"], ans: 2, reason: "∫[0 to 1] (√x - x) dx = [2/3 x^(3/2) - x²/2]₀¹ = 2/3 - 1/2 = 1/6." },
+        { q: "36. अवकल समीकरण (dy/dx) + y = 1 का हल है:", options: ["y = 1 + Ce⁻ˣ", "y = 1 + Ceˣ", "y = x + C", "None"], ans: 0, reason: "चर पृथक्करण विधि द्वारा।" },
+        { q: "37. वक्र y = x² का x = 0 से x = 2 तक क्षेत्रफल है:", options: ["8/3", "4/3", "2", "None"], ans: 0, reason: "∫[0 to 2] x² dx = [x³/3] = 8/3." },
+        { q: "38. कोटि 4 वाले अवकल समीकरण के व्यापक हल (General solution) में अचरों की संख्या:", options: ["1", "2", "3", "4"], ans: 3, reason: "व्यापक हल में अचरों की संख्या कोटि के बराबर होती है।" },
+        { q: "39. अवकल समीकरण dy/dx = tan y / tan x का हल है:", options: ["sin y = C sin x", "cos y = C cos x", "tan y = C tan x", "None"], ans: 0, reason: "cot y dy = tan x dx का समाकलन करने पर log sin y = log sin x + log C." },
+        { q: "40. वृत्त के एक चतुर्थांश का क्षेत्रफल क्या होता है?", options: ["πr²/4", "πr²/2", "πr²", "None"], ans: 0, reason: "पूरे वृत्त का एक चौथाई हिस्सा।" },
+        { q: "41. रैखिक अवकल समीकरण dx/dy + P₁x = Q₁ का I.F. क्या है?", options: ["e^(∫P₁ dx)", "e^(∫P₁ dy)", "∫P₁ dy", "None"], ans: 1, reason: "यहाँ x परतंत्र चर है, अतः y के सापेक्ष समाकलन होगा।" },
+        { q: "42. वक्र x² = y, y-अक्ष और y=1, y=4 के बीच क्षेत्रफल है:", options: ["28/3", "14/3", "7/3", "None"], ans: 1, reason: "∫[1 to 4] √y dy = 2/3(8-1) = 14/3." },
+        { q: "43. अवकल समीकरण y dx - x dy = 0 का हल है:", options: ["y = Cx", "x = Cy", "दोनों", "None"], ans: 2, reason: "दोनों का अर्थ एक ही है, मूल बिंदु से गुजरने वाली रेखा।" },
+        { q: "44. वक्र y = x|x| का x = -1 से x = 1 तक क्षेत्रफल है:", options: ["0", "2/3", "1/3", "1"], ans: 1, reason: "दो सम्मित भागों (प्रत्येक 1/3) का योग 2/3." },
+        { q: "45. अवकल समीकरण dy/dx + y cot x = 2 cos x का I.F. है:", options: ["sin x", "cos x", "tan x", "None"], ans: 0, reason: "e^(∫cot x dx) = e^(log sin x) = sin x." },
+        { q: "46. दीर्घवृत्त x²/9 + y²/4 = 1 का कुल क्षेत्रफल है:", options: ["36π", "13π", "6π", "None"], ans: 2, reason: "π * 3 * 2 = 6π." },
+        { q: "47. अवकल समीकरण d²y/dx² + y = 0 का हल y = A sin x + B cos x है। यह कैसा हल है?", options: ["व्यापक हल", "विशिष्ट हल", "शून्य हल", "None"], ans: 0, reason: "इसमें दो स्वेच्छ अचर A और B मौजूद हैं।" },
+        { q: "48. y-अक्ष के परितः वक्र x = g(y) का क्षेत्रफल y=a से y=b तक है:", options: ["∫[a to b] x dy", "∫[a to b] y dx", "∫[a to b] f(x) dx", "None"], ans: 0, reason: "क्षैतिज पट्टियों (Horizontal strips) का उपयोग करने पर।" },
+        { q: "49. अवकल समीकरण dy/dx = f(y/x) कहलाता है:", options: ["रैखिक", "समघातीय", "चर पृथक्करण", "None"], ans: 1, reason: "यह समघातीय फलनों का गुण है।" },
+        { q: "50. 'Pritam Quiz' मैथ सेट 7 का अंतिम संदेश:", options: ["एरिया कवर करो और टॉपर बनो 🚀", "मैथ कठिन है", "सिर्फ सूत्र याद करो", "कोई नहीं"], ans: 0, reason: "कलन के अनुप्रयोग आपकी समझ को नया विस्तार देते हैं। लगे रहो प्रीतम!" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 व्याख्या: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

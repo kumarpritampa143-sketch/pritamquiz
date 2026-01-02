@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Set-8: Poetry & Grammar 🎖️</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf4ff; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #701a75, #a21caf); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #f5d0fe; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #701a75; margin-bottom: 25px; line-height: 1.5; text-align: left; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #fdf4ff; border: 2px solid #f5d0fe; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #701a75; }
+        .option-btn:hover { background: #fae8ff; transform: translateX(5px); border-color: #a21caf; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #a21caf; border-radius: 5px; text-align: left; font-size: 0.95em; color: #701a75; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #701a75; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>English Set-8 🇬🇧</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #a21caf; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>Patriotic Pride! 🎖️</h1>
+        <div style="font-size: 3em; color: #701a75; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #a21caf; color: white; cursor: pointer; font-weight: bold;">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. Who wrote 'An Epitaph'?", options: ["Walter de la Mare", "Rupert Brooke", "John Keats", "T.S. Eliot"], ans: 0, reason: "Walter de la Mare is known for his poems of imagination and mystery." },
+        { q: "2. 'The Soldier' is a poem written by:", options: ["W.H. Auden", "Rupert Brooke", "Walt Whitman", "John Donne"], ans: 1, reason: "Rupert Brooke was a famous English war poet." },
+        { q: "3. 'An Epitaph' deals with a beautiful ______.", options: ["Girl", "Lady", "Flower", "Child"], ans: 1, reason: "The poem is about a lady of the West Country who is now in her grave." },
+        { q: "4. 'The Soldier' is a ______.", options: ["Sonnet", "Ode", "Elegy", "Epic"], ans: 0, reason: "A sonnet is a poem of 14 lines, which 'The Soldier' is." },
+        { q: "5. Walter de la Mare makes us aware of the ______ of modern life.", options: ["Inhuman conditions", "Wealth", "Happiness", "Dreams"], ans: 0, reason: "He often writes about the loneliness and harshness of the modern world." },
+        { q: "6. Rupert Brooke praises ______ in his poem.", options: ["India", "America", "England", "Germany"], ans: 2, reason: "The poem is deeply patriotic towards his homeland, England." },
+        { q: "7. 'When I crumble, who will remember' - here 'crumble' means ______.", options: ["To fall", "To die", "To eat", "To run"], ans: 1, reason: "The poet worries that after his death, no one will remember the lady." },
+        { q: "8. A 'Pulse in the eternal mind' is a line from ______.", options: ["The Soldier", "Snake", "Fire-Hymn", "Macavity"], ans: 0, reason: "The poet believes his thoughts will live on in the eternal soul of England." },
+        { q: "9. Queen Elizabeth II honored Walter de la Mare with the 'Order of Merit' in ______.", options: ["1952", "1953", "1954", "1955"], ans: 1, reason: "He was recognized for his massive contribution to literature." },
+        { q: "10. Rupert Brooke died of ______ during the war.", options: ["Bullet injury", "Septicemia", "Cancer", "Tuberculosis"], ans: 1, reason: "He died of blood poisoning on his way to the Gallipoli campaign." },
+        { q: "11. The lady mentioned in 'An Epitaph' belonged to the ______.", options: ["North Country", "East Country", "West Country", "South Country"], ans: 2, reason: "Line: 'I think she was the most beautiful lady / That ever was in the West Country'." },
+        { q: "12. In 'The Soldier', the poet suggests that the place where he is buried will forever be ______.", options: ["Foreign", "England", "Forgotten", "None"], ans: 1, reason: "He says 'That there’s some corner of a foreign field / That is for ever England'." },
+        { q: "13. 'Beauty vanishes, beauty ______.'", options: ["Stays", "Passes", "Grows", "None"], ans: 1, reason: "Line: 'But beauty vanishes; beauty passes / However rare—rare it be'." },
+        { q: "14. Rupert Brooke is described as a 'War Poet' but his tone is ______.", options: ["Aggressive", "Patriotic/Idealistic", "Cowardly", "Sad"], ans: 1, reason: "His early war poems were full of romantic patriotism." },
+        { q: "15. Choose the correctly spelt word:", options: ["Epitaph", "Epitaphe", "Epitaf", "Epitaphh"], ans: 0, reason: "Correct spelling is 'Epitaph'." },
+        { q: "16. Indirect Narration: He said, 'I am reading.'", options: ["He said that he is reading", "He said that he was reading", "He said he read", "None"], ans: 1, reason: "Present Continuous changes to Past Continuous." },
+        { q: "17. Walter de la Mare was born in the year ______.", options: ["1873", "1883", "1893", "1903"], ans: 0, reason: "He was a late Victorian and modern era poet." },
+        { q: "18. According to 'The Soldier', England has given him her flowers to ______.", options: ["Sell", "Love", "Eat", "None"], ans: 1, reason: "Line: 'Gave, once, her flowers to love, her ways to roam'." },
+        { q: "19. The poet of 'An Epitaph' believes that ______ is not permanent.", options: ["Death", "Beauty", "Love", "Hate"], ans: 1, reason: "He emphasizes that physical beauty fades with time." },
+        { q: "20. Rupert Brooke was described as 'the handsomest young man in England' by ______.", options: ["W.B. Yeats", "T.S. Eliot", "Keats", "Donne"], ans: 0, reason: "Yeats was a great admirer of Brooke's personality." },
+        { q: "21. 'Light of step and heart was she' means the lady was ______.", options: ["Heavy", "Carefree/Vagrant", "Sad", "Fast"], ans: 1, reason: "It suggests she was a person who liked to wander without much commitment." },
+        { q: "22. The first 8 lines of a sonnet are called ______.", options: ["Sestet", "Octave", "Couplet", "Quatrain"], ans: 1, reason: "Octave (8 lines) followed by Sestet (6 lines)." },
+        { q: "23. Walter de la Mare is often called a poet for ______.", options: ["Old people", "Children", "Soldiers", "Kings"], ans: 1, reason: "He is famous for his nursery rhymes and poems for children." },
+        { q: "24. 'A dust whom England bore, shaped, made aware' - here 'dust' refers to ______.", options: ["Soil", "The Soldier/Poet", "Pollution", "None"], ans: 1, reason: "The human body is often referred to as dust in literature." },
+        { q: "25. Change into Passive: 'Open the door.'", options: ["The door is opened", "Let the door be opened", "Open the door please", "None"], ans: 1, reason: "Imperative sentences use 'Let + object + be + V3'." },
+        { q: "26. Synonym of 'Vanish':", options: ["Appear", "Disappear", "Stay", "Build"], ans: 1, reason: "To vanish is to disappear suddenly." },
+        { q: "27. Walter de la Mare died in ______.", options: ["1956", "1966", "1976", "1986"], ans: 0, reason: "He lived a long life until the mid-50s." },
+        { q: "28. 'The Soldier' was written during the early phase of ______.", options: ["WW I", "WW II", "Civil War", "Cold War"], ans: 0, reason: "It was written in 1914 at the start of World War I." },
+        { q: "29. The poet of 'An Epitaph' feels ______ for the lady.", options: ["Angry", "Sad/Melancholic", "Happy", "None"], ans: 1, reason: "The poem has a tone of mourning for lost beauty." },
+        { q: "30. The last 6 lines of a sonnet are called ______.", options: ["Octave", "Sestet", "Couplet", "Chorus"], ans: 1, reason: "Sestet is the concluding 6 lines." },
+        { q: "31. Collective Noun: A ______ of soldiers.", options: ["Pack", "Army/Regiment", "School", "None"], ans: 1, reason: "Army or Regiment is used for soldiers." },
+        { q: "32. Choose the correctly spelt word:", options: ["Soldier", "Soljer", "Sodier", "Soldyer"], ans: 0, reason: "Correct spelling is 'Soldier'." },
+        { q: "33. Walter de la Mare's poetry shows a sense of ______.", options: ["Humor", "Mystery/Supernatural", "Logic", "Science"], ans: 1, reason: "He often wrote about the unseen and the magical." },
+        { q: "34. Brooke's poem 'The Soldier' is a ______ sonnet.", options: ["Petrarchan", "Shakespearean", "Spenserian", "None"], ans: 0, reason: "It follows the Octave-Sestet structure." },
+        { q: "35. 'And when I crumble' - the 'I' here is the ______.", options: ["Lady", "Poet", "Reader", "None"], ans: 1, reason: "The poet himself is speaking." },
+        { q: "36. The soldier wants to be remembered as someone who gave back the ______ given by England.", options: ["Money", "Thoughts/Pulse", "Guns", "None"], ans: 1, reason: "He wants to return the peace and culture his land gave him." },
+        { q: "37. He ______ (go) to church every Sunday.", options: ["go", "goes", "going", "gone"], ans: 1, reason: "Habitual action - Simple Present." },
+        { q: "38. Antonym of 'Beautiful':", options: ["Pretty", "Ugly", "Smart", "None"], ans: 1, reason: "Ugly is the opposite." },
+        { q: "39. The lady in 'An Epitaph' was 'rare, rare it be' - 'rare' means ______.", options: ["Common", "Uncommon/Exceptional", "Bad", "None"], ans: 1, reason: "Her beauty was unique and hard to find." },
+        { q: "40. In 'The Soldier', England's 'air' is described as ______.", options: ["Dirty", "Washed by the rivers/Blest by suns", "Cold", "Hot"], ans: 1, reason: "The poet uses nature to show England's purity." },
+        { q: "41. Walter de la Mare lost his ______ at the age of four.", options: ["Mother", "Father", "Brother", "None"], ans: 1, reason: "This early loss influenced his melancholic style." },
+        { q: "42. 'The Soldier' is part of a series of ______ sonnets.", options: ["Three", "Five", "Seven", "Ten"], ans: 1, reason: "Brooke wrote five war sonnets, this being the most famous." },
+        { q: "43. Choose the correct sentence:", options: ["He is my older brother", "He is my elder brother", "He is my more old brother", "None"], ans: 1, reason: "Use 'elder' for family members." },
+        { q: "44. Give one word: 'The words written on a tomb.'", options: ["Biography", "Epitaph", "Autobiography", "None"], ans: 1, reason: "Epitaph (समाधि-लेख)." },
+        { q: "45. Walter de la Mare was born in ______ (Country).", options: ["India", "America", "England", "France"], ans: 2, reason: "He was a British poet." },
+        { q: "46. In Brooke's poem, 'laughter, learnt of friends' refers to ______.", options: ["Mockery", "Happiness/Joy of life", "Sadness", "None"], ans: 1, reason: "He remembers the good times spent in England." },
+        { q: "47. 'Gentleness, in hearts at peace, under an English heaven' is the ______ line.", options: ["First", "Middle", "Last", "None"], ans: 2, reason: "The poem ends with this peaceful image." },
+        { q: "48. Bread and butter ______ my breakfast.", options: ["is", "are", "were", "None"], ans: 0, reason: "Pairs that form one idea take a singular verb." },
+        { q: "49. 'A lady of the West Country' - the lady is now ______.", options: ["In a palace", "In her grave", "In the market", "None"], ans: 1, reason: "The epitaph is written on her grave." },
+        { q: "50. Pritam's English Progress:", options: ["Mastering Literature! 🎖️", "Learning Grammar", "Almost a topper", "All of the above"], ans: 3, reason: "Amazing! Set 8 is done. Only 2 more to go for the complete 3000 questions!" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 Explanation: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

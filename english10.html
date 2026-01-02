@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Final Set-10: 3000 Questions Milestone 🏆</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f1f5f9; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #1e293b, #334155); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 100; border-bottom: 2px solid #38bdf8; }
+        .container { max-width: 750px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: #1e293b; border-radius: 20px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; border: 1px solid #334155; }
+        .question-text { font-size: 1.4em; font-weight: 600; color: #38bdf8; margin-bottom: 25px; line-height: 1.5; text-align: left; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #334155; border: 1px solid #475569; padding: 16px; border-radius: 12px; font-size: 1.1em; cursor: pointer; transition: all 0.3s; text-align: left; color: #cbd5e1; }
+        .option-btn:hover { background: #475569; transform: translateY(-2px); border-color: #38bdf8; }
+        .correct { background-color: #064e3b !important; border-color: #10b981 !important; color: #ecfdf5; font-weight: bold; }
+        .wrong { background-color: #7f1d1d !important; border-color: #ef4444 !important; color: #fef2f2; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #0f172a; border-left: 5px solid #38bdf8; border-radius: 5px; text-align: left; font-size: 1em; color: #94a3b8; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 18px; background: #38bdf8; color: #0f172a; border: none; border-radius: 12px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 50px 20px; }
+        .final-badge { font-size: 80px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>English Final Set 🏁</h2>
+    <div style="font-weight: bold; font-size: 1.2em;">Score: <span id="score" style="color: #38bdf8;">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #94a3b8; font-weight: bold; letter-spacing: 1px;">FINAL MISSION: QUESTION 1/50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">CONTINUE TO GLORY ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <div class="final-badge">👑</div>
+        <h1 style="color: #38bdf8; font-size: 2.5em;">3000 QUESTIONS COMPLETED!</h1>
+        <p style="font-size: 1.3em; margin: 20px 0;">Pritam, you are now a Bihar Board Master.</p>
+        <div style="font-size: 4em; color: white; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="window.location.href='index.html'" style="padding: 20px 40px; border-radius: 40px; border: none; background: #38bdf8; color: #0f172a; cursor: pointer; font-weight: bold; font-size: 1.2em;">GO TO MASTER DASHBOARD</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. Who wrote the poem 'Snake'?", options: ["John Keats", "D.H. Lawrence", "Kamala Das", "T.S. Eliot"], ans: 1, reason: "D.H. Lawrence was an English novelist and poet known for his exploration of human nature and instincts." },
+        { q: "2. 'My Grandmother's House' is a poem by:", options: ["T.S. Eliot", "Kamala Das", "Keki N. Daruwalla", "Walt Whitman"], ans: 1, reason: "Kamala Das is a famous Indian poetess who wrote in both English and Malayalam." },
+        { q: "3. The snake came to the poet's water-trough on a ______ day.", options: ["Cold", "Rainy", "Hot", "Windy"], ans: 2, reason: "It was a hot day in Sicily, and the snake came to drink water." },
+        { q: "4. The poetess of 'My Grandmother's House' received love from her ______.", options: ["Mother", "Grandmother", "Aunt", "Father"], ans: 1, reason: "She fondly remembers the unconditional love she got in that house." },
+        { q: "5. In 'Snake', the poet was wearing ______.", options: ["A coat", "Pyjamas", "A suit", "Nothing"], ans: 1, reason: "Line: 'I went down the steps with my pitcher / In my pyjamas for the heat'." },
+        { q: "6. Kamala Das is an ______ poetess.", options: ["American", "British", "Indian", "Australian"], ans: 2, reason: "She is one of the most prominent voices in Indian English poetry." },
+        { q: "7. The color of the snake in the poem was ______.", options: ["Black", "Golden brown", "Green", "Yellow"], ans: 1, reason: "The poet describes it as 'earth-golden' and 'earth-brown'." },
+        { q: "8. After the death of the grandmother, ______ moved among the books.", options: ["Rats", "Snakes", "Cats", "Spiders"], ans: 1, reason: "Metaphorically showing the silence and neglect of the house." },
+        { q: "9. The poet in 'Snake' considered himself a ______.", options: ["Master", "Second comer", "Enemy", "King"], ans: 1, reason: "He arrived at the trough after the snake, so he felt he should wait." },
+        { q: "10. Kamala Das's autobiography is titled ______.", options: ["My Life", "My Story", "The Truth", "None"], ans: 1, reason: "'My Story' is her famous and controversial autobiography." },
+        { q: "11. D.H. Lawrence exalts the values of ______ life in 'Snake'.", options: ["City", "Primitive", "Modern", "Artificial"], ans: 1, reason: "He contrasts the 'voice of education' with natural instincts." },
+        { q: "12. The poetess begs at ______ doors for love now.", options: ["Friends'", "Strangers'", "Enemies'", "None"], ans: 1, reason: "She feels the loss of genuine love she had in her childhood." },
+        { q: "13. The snake looked at the poet ______.", options: ["Angrily", "Vaguely", "Happily", "Sadly"], ans: 1, reason: "Line: 'He lifted his head from his drinking, as cattle do / And looked at me vaguely'." },
+        { q: "14. My Grandmother's House is an ______ poem.", options: ["Biographical", "Autobiographical", "Historical", "None"], ans: 1, reason: "It is based on her personal memories of her family home." },
+        { q: "15. Indirect Narration: She said, 'I can do it.'", options: ["She said that she could do it", "She said that she can do it", "She says she could do it", "None"], ans: 0, reason: "'Can' changes to 'Could' when the reporting verb is in the past." },
+        { q: "16. Passive Voice: 'Post this letter.'", options: ["The letter is posted", "Let this letter be posted", "Post the letter please", "None"], ans: 1, reason: "Imperative sentences use 'Let + Object + be + V3'." },
+        { q: "17. The 'voice of education' told the poet to ______ the snake.", options: ["Feed", "Kill", "Catch", "Worship"], ans: 1, reason: "His logic told him that golden snakes in Sicily are poisonous and must be killed." },
+        { q: "18. The poetess's blood turned ______ like the moon.", options: ["Red", "Cold", "Hot", "Blue"], ans: 1, reason: "She felt a sense of numbness and sorrow." },
+        { q: "19. The snake retreated into a 'horrid black ______'.", options: ["Room", "Hole", "Forest", "None"], ans: 1, reason: "The snake went back into the crack in the wall." },
+        { q: "20. Kamala Das was shortlisted for the Nobel Prize in ______.", options: ["1984", "1994", "2004", "None"], ans: 0, reason: "She was a globally recognized literary figure." },
+        { q: "21. The poet felt ______ after hitting the snake with a log.", options: ["Happy", "Regret/Guilt", "Proud", "Brave"], ans: 1, reason: "He regretted his 'paltry' and 'vulgar' act." },
+        { q: "22. The house went into ______ after the grandmother died.", options: ["Noise", "Silence", "Darkness", "None"], ans: 1, reason: "The joy and life of the house vanished." },
+        { q: "23. D.H. Lawrence was born in the year ______.", options: ["1885", "1895", "1905", "1875"], ans: 0, reason: "He was a significant early 20th-century writer." },
+        { q: "24. 'My Grandmother's House' is from the collection ______.", options: ["The Old Playhouse", "Summer in Calcutta", "Only the Soul Knows", "None"], ans: 1, reason: "This collection established her as a major English poet." },
+        { q: "25. He ______ (wait) for me since 4 o'clock.", options: ["waits", "is waiting", "has been waiting", "wait"], ans: 2, reason: "'Since + time' requires Present Perfect Continuous." },
+        { q: "26. Change into Passive: 'I saw him.'", options: ["He is seen by me", "He was seen by me", "He seen by me", "None"], ans: 1, reason: "Simple Past Passive: was/were + V3." },
+        { q: "27. The poet compares the snake to a ______ in exile.", options: ["Soldier", "King", "God", "None"], ans: 1, reason: "Line: 'Like a king in exile, uncrowned in the underworld'." },
+        { q: "28. The poetess says her soul is like a ______.", options: ["Bird", "Window", "Dark room", "None"], ans: 2, reason: "She often uses images of isolation and memory." },
+        { q: "29. The snake was ______ (action).", options: ["Hissing", "Drinking water", "Biting", "Running"], ans: 1, reason: "The entire poem revolves around the snake drinking at the trough." },
+        { q: "30. One who hates women is a ______.", options: ["Misanthrope", "Misogynist", "Philanthropist", "None"], ans: 1, reason: "Mis=Hate, Gyn=Woman." },
+        { q: "31. Idiom: 'To cry wolf' means ______.", options: ["To shout", "To give a false alarm", "To be brave", "None"], ans: 1, reason: "Warning people of a danger that isn't there." },
+        { q: "32. Choose the correctly spelt word:", options: ["Grammar", "Grammer", "Gramar", "Gramerr"], ans: 0, reason: "It ends with '-mar', not '-mer'." },
+        { q: "33. 'Etna' is a ______ in Sicily mentioned in 'Snake'.", options: ["River", "Volcano", "City", "Forest"], ans: 1, reason: "Mount Etna is an active volcano in Italy." },
+        { q: "34. The poetess lived in ______ in her childhood.", options: ["Delhi", "Mumbai", "A village house", "London"], ans: 2, reason: "She spent her early years in her ancestral home in Malabar." },
+        { q: "35. Lawrence calls his act of hitting the snake a ______ act.", options: ["Brave", "Paltry/Vile", "Smart", "None"], ans: 1, reason: "He felt ashamed of giving in to the 'voice of education'." },
+        { q: "36. Kamala Das's poetry is known for its ______.", options: ["Nature imagery", "Frankness and Intimacy", "War themes", "None"], ans: 1, reason: "She wrote boldly about feminine emotions and desires." },
+        { q: "37. He ______ (go) to Delhi tomorrow.", options: ["goes", "went", "will go", "has gone"], ans: 2, reason: "'Tomorrow' indicates Future Tense." },
+        { q: "38. Synonym of 'Courage':", options: ["Fear", "Bravery", "Weakness", "Laziness"], ans: 1, reason: "Both refer to mental strength." },
+        { q: "39. The snake sipped water with his ______ mouth.", options: ["Small", "Straight", "Round", "None"], ans: 1, reason: "Line: 'And sipped with his straight mouth'." },
+        { q: "40. The poetess says that she has lost her ______.", options: ["Way", "Money", "House", "None"], ans: 0, reason: "She feels she has lost her direction in the search for love." },
+        { q: "41. D.H. Lawrence died in ______.", options: ["1930", "1940", "1950", "1920"], ans: 0, reason: "He died relatively young at the age of 44." },
+        { q: "42. The grandmother died and the house was ______.", options: ["Sold", "Burnt", "Deserted/Silent", "Rebuilt"], ans: 2, reason: "It became a place of shadows and memories." },
+        { q: "43. Choose the correct sentence:", options: ["I have a ten rupees note", "I have a ten-rupee note", "I have ten-rupees note", "None"], ans: 1, reason: "The noun used as an adjective (rupee) should be singular." },
+        { q: "44. Antonym of 'Optimist':", options: ["Pessimist", "Theist", "Atheist", "None"], ans: 0, reason: "A pessimist looks at the negative side." },
+        { q: "45. 'A sort of perversity' made the poet ______.", options: ["Wait", "Throw a log", "Run away", "None"], ans: 1, reason: "The sudden urge to hit the creature." },
+        { q: "46. My Grandmother's House is a ______.", options: ["Lyric", "Sonnet", "Epic", "None"], ans: 0, reason: "It is a short personal poem expressing emotions." },
+        { q: "47. The snake was like a ______ of the underworld.", options: ["Demon", "Lord", "Ghost", "None"], ans: 1, reason: "D.H. Lawrence shows respect to the creature's majesty." },
+        { q: "48. One who walks in sleep is a ______.", options: ["Somniloquist", "Somnambulist", "Garrulous", "None"], ans: 1, reason: "Ambul=Walk." },
+        { q: "49. 'Snake' is written in ______.", options: ["Rhyming verse", "Free verse", "Blank verse", "None"], ans: 1, reason: "Lawrence did not follow a strict rhyme scheme here." },
+        { q: "50. FINAL MESSAGE of Pritam Quiz Test:", options: ["YOU ARE A CHAMPION! 🏆", "You completed 3000 questions", "Board Exam is yours!", "All of the Above"], ans: 3, reason: "Congratulations Pritam! You have finished the marathon. You are ready!" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `FINAL MISSION: QUESTION ${currentQuestionIndex + 1}/50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 Explanation: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

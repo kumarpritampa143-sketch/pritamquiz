@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Set-3: Calculus Basics 📐</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff1f2; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #be123c, #fb7185); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #fecdd3; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #881337; margin-bottom: 25px; line-height: 1.5; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #fff1f2; border: 2px solid #fecdd3; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #9f1239; }
+        .option-btn:hover { background: #ffe4e6; transform: translateX(5px); border-color: #fb7185; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #fb7185; border-radius: 5px; text-align: left; font-size: 0.95em; color: #881337; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #be123c; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>Math Set-3 📐</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #e11d48; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">अगला प्रश्न ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>कैलकुलस के महारथी! 🚀</h1>
+        <div style="font-size: 3em; color: #be123c; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #fb7185; color: white; cursor: pointer; font-weight: bold;">दोबारा प्रयास करें</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. d/dx (xⁿ) का मान क्या होगा?", options: ["nxⁿ", "nxⁿ⁻¹", "xⁿ⁺¹ / (n+1)", "n xⁿ⁺¹"], ans: 1, reason: "पावर रूल के अनुसार घात आगे आती है और एक कम हो जाती है।" },
+        { q: "2. d/dx (sin x) किसके बराबर है?", options: ["cos x", "-cos x", "sec² x", "tan x"], ans: 0, reason: "साइन का अवकलन कोसाइन होता है।" },
+        { q: "3. d/dx (cos x) का मान है:", options: ["sin x", "-sin x", "-cosec² x", "tan x"], ans: 1, reason: "कोसाइन का अवकलन ऋणात्मक साइन होता है।" },
+        { q: "4. d/dx (tan x) का मान क्या है?", options: ["sec x", "sec² x", "cot x", "-sec² x"], ans: 1, reason: "टैन का डेरिवेटिव सेक स्क्वायर होता है।" },
+        { q: "5. d/dx (log x) बराबर है:", options: ["x", "1/x", "eˣ", "1"], ans: 1, reason: "लघुगणक फलन का अवकलन 1/x होता है।" },
+        { q: "6. d/dx (eˣ) का मान होगा:", options: ["eˣ", "xeˣ⁻¹", "1/eˣ", "log x"], ans: 0, reason: "एक्सपोनेंशियल फलन का अवकलन वही फलन रहता है।" },
+        { q: "7. d/dx (constant) का मान क्या होता है?", options: ["1", "0", "constant", "अपरिभाषित"], ans: 1, reason: "अचर राशि में परिवर्तन की दर हमेशा शून्य होती है।" },
+        { q: "8. d/dx (√x) का मान क्या है?", options: ["1/2√x", "√x / 2", "2√x", "1/√x"], ans: 0, reason: "x^(1/2) पर पावर रूल लगाने पर 1/2 x^(-1/2) प्राप्त होता है।" },
+        { q: "9. d/dx (sin⁻¹ x) का सूत्र है:", options: ["1 / √(1-x²)", "-1 / √(1-x²)", "1 / (1+x²)", "1 / (x√(x²-1))"], ans: 0, reason: "यह साइन इन्वर्स का मानक अवकलन सूत्र है।" },
+        { q: "10. d/dx (tan⁻¹ x) किसके बराबर है?", options: ["1 / √(1-x²)", "1 / (1+x²)", "-1 / (1+x²)", "sec² x"], ans: 1, reason: "टैन इन्वर्स का अवकलन 1 / (1 + x²) होता है।" },
+        { q: "11. d/dx (aˣ) का मान है:", options: ["aˣ", "aˣ log a", "x aˣ⁻¹", "aˣ / log a"], ans: 1, reason: "जहाँ a एक धनात्मक अचर है।" },
+        { q: "12. d/dx (cot x) का मान क्या है?", options: ["-cosec² x", "cosec² x", "sec² x", "-tan x"], ans: 0, reason: "कोट का अवकलन माइनस कोसेक स्क्वायर होता है।" },
+        { q: "13. d/dx (sec x) बराबर है:", options: ["sec x tan x", "sec² x", "tan² x", "sec x"], ans: 0, reason: "सेक का अवकलन सेक इनटू टैन होता है।" },
+        { q: "14. यदि y = sin(x²), तो dy/dx क्या होगा?", options: ["cos(x²)", "2x cos(x²)", "2x sin(x²)", "None"], ans: 1, reason: "चेन रूल के अनुसार: cos(x²) * d/dx(x²) = 2x cos(x²)।" },
+        { q: "15. d/dx (cos⁻¹ x) का मान है:", options: ["1 / √(1-x²)", "-1 / √(1-x²)", "-1 / (1+x²)", "None"], ans: 1, reason: "कोसाइन इन्वर्स का अवकलन साइन इन्वर्स के ऋणात्मक के बराबर है।" },
+        { q: "16. d/dx (uv) का सूत्र (Product Rule) क्या है?", options: ["u'v + uv'", "u'v - uv'", "u'v'", "u/v"], ans: 0, reason: "पहला फलन × दूसरे का अवकलन + दूसरा × पहले का अवकलन।" },
+        { q: "17. d/dx (u/v) का सूत्र (Quotient Rule) है:", options: ["(vu' - uv') / v²", "(uv' - vu') / v²", "u'/v'", "None"], ans: 0, reason: "हर × अंश का अवकलन - अंश × हर का अवकलन, पूरे के बटे हर का वर्ग।" },
+        { q: "18. d/dx (log sin x) का मान है:", options: ["tan x", "cot x", "1/sin x", "cos x"], ans: 1, reason: "1/sin x * cos x = cot x (चेन रूल द्वारा)।" },
+        { q: "19. d/dx (2x) का मान क्या है?", options: ["2", "x", "2x log 2", "0"], ans: 0, reason: "x का अवकलन 1 होता है, अतः 2 * 1 = 2।" },
+        { q: "20. d/dx (sin x + cos x) बराबर है:", options: ["cos x + sin x", "cos x - sin x", "sin x - cos x", "0"], ans: 1, reason: "अलग-अलग अवकलन करने पर cos x और -sin x प्राप्त होता है।" },
+        { q: "21. f(x) = |x|, x = 0 पर कैसा है?", options: ["सतत और अवकलनीय", "सतत लेकिन अवकलनीय नहीं", "न सतत न अवकलनीय", "कोई नहीं"], ans: 1, reason: "0 पर ग्राफ में कोना (Sharp turn) होने के कारण यह अवकलनीय नहीं है।" },
+        { q: "22. d/dx (cosec x) का मान है:", options: ["-cosec x cot x", "cosec x cot x", "-cosec² x", "None"], ans: 0, reason: "कोसेक का अवकलन ऋणात्मक कोसेक इनटू कोट होता है।" },
+        { q: "23. d/dx (logₐ x) का मान क्या है?", options: ["1/x", "1/(x log a)", "log a / x", "aˣ"], ans: 1, reason: "आधार परिवर्तन सूत्र का उपयोग करने पर।" },
+        { q: "24. यदि y = e^(3x), तो dy/dx है:", options: ["e^(3x)", "3e^(3x)", "e³", "3x"], ans: 1, reason: "e^(3x) * d/dx(3x) = 3e^(3x)।" },
+        { q: "25. d/dx (tan⁻¹ x + cot⁻¹ x) का मान है:", options: ["π/2", "1", "0", "2 / (1+x²)"], ans: 2, reason: "चूंकि tan⁻¹ x + cot⁻¹ x = π/2 (अचर), और अचर का अवकलन 0 होता है।" },
+        { q: "26. द्वितीय कोटि का अवकलज (Second derivative) d²/dx² (x³) है:", options: ["3x²", "6x", "6", "0"], ans: 1, reason: "प्रथम: 3x², द्वितीय: 3(2x) = 6x।" },
+        { q: "27. d/dx (sin⁻¹ x + cos⁻¹ x) का मान क्या होगा?", options: ["0", "1", "π/2", "None"], ans: 0, reason: "यह योग हमेशा π/2 होता है, जिसका अवकलन शून्य है।" },
+        { q: "28. यदि x = at², y = 2at, तो dy/dx क्या होगा?", options: ["t", "1/t", "2t", "a/t"], ans: 1, reason: "dy/dt = 2a, dx/dt = 2at. भाग देने पर 1/t प्राप्त होता है।" },
+        { q: "29. d/dx (√ sin x) का मान है:", options: ["cos x / 2√sin x", "1 / 2√sin x", "cos x √sin x", "None"], ans: 0, reason: "पावर रूल और चेन रूल के संयोजन से।" },
+        { q: "30. d/dx (log log x) बराबर है:", options: ["1 / (x log x)", "1 / log x", "1/x", "None"], ans: 0, reason: "1/log x * d/dx(log x) = 1/(x log x)।" },
+        { q: "31. यदि y = cos √x, तो dy/dx है:", options: ["-sin √x / 2√x", "sin √x / 2√x", "-sin √x", "None"], ans: 0, reason: "चेन रूल द्वारा।" },
+        { q: "32. d/dx (sin⁻¹ 2x / (1+x²)) बराबर है:", options: ["1 / (1+x²)", "2 / (1+x²)", "0", "None"], ans: 1, reason: "यह 2 tan⁻¹ x के बराबर है, जिसका अवकलन 2/(1+x²) है।" },
+        { q: "33. d/dx (xˣ) का मान क्या है?", options: ["x xˣ⁻¹", "xˣ (1 + log x)", "xˣ log x", "None"], ans: 1, reason: "लघुगणकीय अवकलन (Logarithmic differentiation) द्वारा।" },
+        { q: "34. रोल की प्रमेय (Rolle's Theorem) के लिए f'(c) का मान होना चाहिए:", options: ["0", "1", "f(a)", "f(b)"], ans: 0, reason: "प्रमेय के अनुसार कम से कम एक बिंदु c पर स्पर्श रेखा क्षैतिज होती है।" },
+        { q: "35. माध्यमान प्रमेय (Mean Value Theorem) के अनुसार f'(c) = ?", options: ["0", "(f(b) - f(a)) / (b - a)", "f(b) + f(a)", "None"], ans: 1, reason: "यह अंतराल के सिरों को जोड़ने वाली छेदक रेखा की ढाल के बराबर होता है।" },
+        { q: "36. d/dx (5x) का मान क्या है?", options: ["5x", "5x log 5", "x 5x⁻¹", "5"], ans: 1, reason: "यह aˣ के सूत्र पर आधारित है।" },
+        { q: "37. यदि y = tan⁻¹((1-cos x)/sin x), तो dy/dx है:", options: ["1", "1/2", "0", "None"], ans: 1, reason: "त्रिकोणमितीय सरलीकरण के बाद y = x/2 बचता है।" },
+        { q: "38. d/dx (|x|³) का मान x = 0 पर क्या होगा?", options: ["3", "0", "अस्तित्व नहीं है", "1"], ans: 1, reason: "0 पर फलन चिकना (Smooth) है, अवकलन 0 आता है।" },
+        { q: "39. d/dx (sec⁻¹ x) का मान है:", options: ["1 / (x√(x²-1))", "-1 / (x√(x²-1))", "1 / (1+x²)", "None"], ans: 0, reason: "सेक इन्वर्स का मानक सूत्र।" },
+        { q: "40. d/dx (2^x / 3^x) का मान क्या है?", options: ["(2/3)^x log(2/3)", "(2/3)^x", "0", "None"], ans: 0, reason: "इसे (2/3)^x मानकर aˣ का सूत्र लगाएं।" },
+        { q: "41. एक अचर फलन (Constant function) हमेशा कैसा होता है?", options: ["सतत", "अवकलनीय", "दोनों", "कोई नहीं"], ans: 2, reason: "इसका ग्राफ एक सीधी क्षैतिज रेखा होती है जो हर जगह सतत और सुगम है।" },
+        { q: "42. d/dx (sin³ x) का मान है:", options: ["3 sin² x", "3 sin² x cos x", "cos³ x", "None"], ans: 1, reason: "चेन रूल: 3 sin² x * cos x।" },
+        { q: "43. यदि y = log x², तो dy/dx है:", options: ["1/x²", "2/x", "2/x²", "1/x"], ans: 1, reason: "log x² = 2 log x, अतः अवकलन 2/x होगा।" },
+        { q: "44. d/dx (tan x²) बराबर है:", options: ["sec² x²", "2x sec² x²", "2x tan x", "None"], ans: 1, reason: "चेन रूल द्वारा।" },
+        { q: "45. यदि y = √x + 1/√x, तो dy/dx x=1 पर क्या है?", options: ["1", "0", "1/2", "None"], ans: 1, reason: "1/2√x - 1/2x√x. x=1 रखने पर 1/2 - 1/2 = 0." },
+        { q: "46. d/dx (cos⁻¹ 2x) का मान क्या है?", options: ["-2 / √(1-4x²)", "2 / √(1-4x²)", "-1 / √(1-4x²)", "None"], ans: 0, reason: "बाहरी फलन cos⁻¹ और आंतरिक 2x का अवकलन।" },
+        { q: "47. अस्पष्ट फलन (Implicit function) x² + y² = a² के लिए dy/dx है:", options: ["x/y", "-x/y", "y/x", "-y/x"], ans: 1, reason: "2x + 2y(dy/dx) = 0 से हल करने पर।" },
+        { q: "48. d/dx (1/x) का मान है:", options: ["log x", "-1/x²", "1/x²", "None"], ans: 1, reason: "x⁻¹ पर पावर रूल लगाने पर।" },
+        { q: "49. d/dx (sin x°) का मान क्या है? (जहाँ ° डिग्री है)", options: ["cos x°", "π/180 cos x°", "180/π cos x°", "None"], ans: 1, reason: "अवकलन के लिए कोण रेडियन में होना चाहिए (x° = πx/180)।" },
+        { q: "50. 'Pritam Quiz' मैथ सेट 3 का समापन सूत्र:", options: ["सतत अभ्यास = सफलता 🚀", "मैथ छोड़ दो", "कल पढ़ेंगे", "कोई नहीं"], ans: 0, reason: "कैलकुलस अभ्यास मांगता है। आपने बेहतरीन शुरुआत की है प्रीतम!" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 व्याख्या: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

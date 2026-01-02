@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Set-3: Ideas & The Artist 📚</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fafaf9; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #1c1917, #44403c); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #e7e5e4; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #1c1917; margin-bottom: 25px; line-height: 1.5; text-align: left; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #f5f5f4; border: 2px solid #e7e5e4; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #44403c; }
+        .option-btn:hover { background: #ede9e6; transform: translateX(5px); border-color: #78716c; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #78716c; border-radius: 5px; text-align: left; font-size: 0.95em; color: #1c1917; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #1c1917; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>English Set-3 🇬🇧</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #78716c; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>Great Job! 🎨</h1>
+        <div style="font-size: 3em; color: #1c1917; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #44403c; color: white; cursor: pointer; font-weight: bold;">Try Again</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. Who wrote 'Ideas that have Helped Mankind'?", options: ["Bertrand Russell", "Shiga Naoya", "Pearl S. Buck", "Anton Chekhov"], ans: 0, reason: "Bertrand Russell was a British philosopher and polymath." },
+        { q: "2. Seibei was a twelve-year-old ______ boy.", options: ["Chinese", "Japanese", "Indian", "Korean"], ans: 1, reason: "Seibei is the protagonist of Shiga Naoya's story 'The Artist'." },
+        { q: "3. Bertrand Russell was awarded the Nobel Prize in Literature in:", options: ["1950", "1952", "1953", "1954"], ans: 0, reason: "He won the Nobel Prize in 1950 for his significant writings." },
+        { q: "4. Seibei's hobby was collecting ______.", options: ["Stamps", "Coins", "Gourds", "Flowers"], ans: 2, reason: "He had a deep passion for finding and polishing gourds." },
+        { q: "5. According to Russell, the ______ helped mankind to survive.", options: ["Invention of fire", "Domestication of animals", "Agriculture", "All of the above"], ans: 3, reason: "Russell discusses how basic survival ideas led to human progress." },
+        { q: "6. Seibei used to polish his gourds with ______.", options: ["Oil", "Soap", "Tea-dregs", "Paint"], ans: 2, reason: "He used tea-dregs to give the gourds a fine luster." },
+        { q: "7. 'The Artist' is a ______.", options: ["Short Story", "Essay", "Drama", "Poem"], ans: 0, reason: "It is a short story written by the Japanese author Shiga Naoya." },
+        { q: "8. Russell says that human beings are different from animals because of their ______.", options: ["Body", "Intellectual and moral qualities", "Speed", "Strength"], ans: 1, reason: "Mankind possesses knowledge and moral values which animals lack." },
+        { q: "9. I ______ (finish) my work just now.", options: ["finish", "finished", "have finished", "finishing"], ans: 2, reason: "'Just now' usually indicates the Present Perfect Tense." },
+        { q: "10. Change into Passive: 'She sings a song.'", options: ["A song is sung by her", "A song was sung by her", "A song sung by her", "None"], ans: 0, reason: "Present Simple passive is 'is/am/are + V3'." },
+        { q: "11. Russell was a philosopher and a ______.", options: ["Scientist", "Historian", "Doctor", "Lawyer"], ans: 1, reason: "He was famous for his work in philosophy and history." },
+        { q: "12. Seibei lived in a ______.", options: ["Big city", "Mountain", "Harbour town", "Desert"], ans: 2, reason: "The story mentions he lived in a harbour town." },
+        { q: "13. Civilization has taught us to be ______ towards one another.", options: ["Cruel", "Friendly", "Indifferent", "Angry"], ans: 1, reason: "Russell argues that civilization makes us more social and friendly." },
+        { q: "14. Seibei's teacher was very ______ when he found him polishing a gourd in class.", options: ["Happy", "Angry", "Calm", "Proud"], ans: 1, reason: "The teacher considered Seibei's hobby to be a distraction." },
+        { q: "15. He is afraid ______ dogs.", options: ["of", "by", "with", "from"], ans: 0, reason: "The fixed preposition for afraid is 'of'." },
+        { q: "16. Choose the correct Indirect Narration: He said, 'I am busy.'", options: ["He said that he is busy", "He said that he was busy", "He say that he was busy", "None"], ans: 1, reason: "Since the reporting verb 'said' is in past tense, the tense inside changes." },
+        { q: "17. Two conditions for human progress are ______ and knowledge.", options: ["Technique", "Money", "War", "Peace"], ans: 0, reason: "Russell focuses on knowledge and technical skills as key to progress." },
+        { q: "18. What did Seibei's father do to the gourds?", options: ["He sold them", "He smashed them with a hammer", "He gifted them", "He kept them"], ans: 1, reason: "His father destroyed his collection to stop his hobby." },
+        { q: "19. Birds die of hunger in large numbers during ______.", options: ["Summer", "Winter", "Rain", "Autumn"], ans: 1, reason: "Russell mentions that animals suffer in winter, unlike humans who prepare for it." },
+        { q: "20. Seibei bought a 5-inch gourd from an old woman for ______ sen.", options: ["Ten", "Twenty", "Five", "Fifty"], ans: 0, reason: "He paid ten sen for a gourd that later became very valuable." },
+        { q: "21. Domestication of animals started in ______ times.", options: ["Modern", "Ancient", "Medieval", "Future"], ans: 1, reason: "This was one of the early ideas that helped mankind." },
+        { q: "22. The teacher gave the confiscated gourd to an old ______.", options: ["Porter", "Doctor", "Priest", "Artist"], ans: 0, reason: "The school porter received the gourd from the teacher." },
+        { q: "23. Synonym of 'Annual':", options: ["Monthly", "Weekly", "Yearly", "Daily"], ans: 2, reason: "Annual means occurring once every year." },
+        { q: "24. Antonym of 'Friend':", options: ["Ally", "Enemy", "Partner", "Companion"], ans: 1, reason: "Enemy is the opposite of friend." },
+        { q: "25. One word: 'A place where birds are kept.'", options: ["Zoo", "Aviary", "Aquarium", "Stable"], ans: 1, reason: "Aviary is a large cage or building for keeping birds." },
+        { q: "26. The invention of ______ was even more important than the domestication of animals.", options: ["Writing", "Internet", "Television", "Radio"], ans: 0, reason: "Russell highlights writing as a massive leap for civilization." },
+        { q: "27. The curio-dealer sold Seibei's gourd for ______ yen.", options: ["50", "100", "600", "500"], ans: 2, reason: "It was sold for a huge sum of 600 yen." },
+        { q: "28. You ______ smoke in public places.", options: ["can", "may", "must not", "might"], ans: 2, reason: "'Must not' is used for prohibition." },
+        { q: "29. He ______ (wait) for you for two hours.", options: ["waits", "is waiting", "has been waiting", "wait"], ans: 2, reason: "'For + time' indicates Present Perfect Continuous." },
+        { q: "30. Choose the correctly spelt word:", options: ["Believe", "Beleive", "Belive", "Bellieve"], ans: 0, reason: "Correct spelling is 'Believe'." },
+        { q: "31. Our ______ qualities make us human.", options: ["Physical", "Biological", "Moral and Intellectual", "Aggressive"], ans: 2, reason: "Russell emphasizes the power of the mind and ethics." },
+        { q: "32. Seibei's father wanted him to be a ______.", options: ["Learned person", "Businessman", "Doctor", "Farmer"], ans: 0, reason: "His father wanted him to study and become a 'learned man'." },
+        { q: "33. We use fire for ______.", options: ["Cooking", "Warmth", "Protection", "All of the above"], ans: 3, reason: "Fire served multiple purposes for early man." },
+        { q: "34. Seibei is now engrossed in ______.", options: ["Painting pictures", "Collecting gourds", "Studying", "Fishing"], ans: 0, reason: "At the end of the story, he switches his hobby to painting." },
+        { q: "35. It is easy to be ______ than to be civilized.", options: ["Savage", "Good", "Bad", "Happy"], ans: 0, reason: "Russell implies that being social requires more effort." },
+        { q: "36. The porter sold the gourd for ______ yen.", options: ["50", "60", "10", "500"], ans: 0, reason: "He sold it to the curio-dealer for 50 yen." },
+        { q: "37. He is ______ S.D.O.", options: ["a", "an", "the", "No article"], ans: 1, reason: "'S.D.O.' starts with a vowel sound /es/." },
+        { q: "38. She is kind ______ everyone.", options: ["at", "to", "for", "with"], ans: 1, reason: "Kind + to (Standard usage)." },
+        { q: "39. Russell's writings focus on ______.", options: ["Logic", "Ethics", "Social problems", "All of the above"], ans: 3, reason: "He was a versatile writer covering many topics." },
+        { q: "40. Seibei's gourds were mostly ______.", options: ["Symmetrical", "Ugly", "Large", "Long"], ans: 0, reason: "He liked even, symmetrical gourds." },
+        { q: "41. Man's ______ increased as he became more civilized.", options: ["Unhappiness", "Population", "Wealth", "Fear"], ans: 1, reason: "Russell notes that technical skills lead to population growth." },
+        { q: "42. The teacher taught ______.", options: ["Ethics", "History", "Math", "Science"], ans: 0, reason: "In the story, the ethics teacher catches Seibei." },
+        { q: "43. Choose the correct sentence:", options: ["I have a homework", "I have some homework", "I have homeworks", "None"], ans: 1, reason: "Homework is uncountable; we use 'some' or just 'homework'." },
+        { q: "44. They ______ (play) football since morning.", options: ["are playing", "have been playing", "played", "play"], ans: 1, reason: "Present Perfect Continuous due to 'since'." },
+        { q: "45. Death is better ______ dishonour.", options: ["to", "than", "for", "with"], ans: 1, reason: "Comparative degree uses 'than'." },
+        { q: "46. He is ______ honorable man.", options: ["a", "an", "the", "None"], ans: 1, reason: "'Honorable' starts with vowel sound /o/." },
+        { q: "47. Russell died in the year ______.", options: ["1970", "1980", "1960", "1950"], ans: 0, reason: "He lived a long life and died in 1970." },
+        { q: "48. Seibei's mother was ______.", options: ["Scolding him", "Crying", "Happy", "None"], ans: 1, reason: "She was upset when the teacher came to their house." },
+        { q: "49. Choose the correctly spelt word:", options: ["Committee", "Comitee", "Comittie", "Commitee"], ans: 0, reason: "Correct spelling is 'Committee'." },
+        { q: "50. Pritam's Mission:", options: ["Bihar Board Topper 🚀", "Score 100/100", "English Master", "All of the above"], ans: 3, reason: "Final set coming soon! Keep going, Pritam." }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 Explanation: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

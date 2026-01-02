@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Set-6: Definite Integrals 📐</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0fdfa; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #0f766e, #14b8a6); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #99f6e4; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #0f766e; margin-bottom: 25px; line-height: 1.5; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #f0fdfa; border: 2px solid #99f6e4; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #0d9488; }
+        .option-btn:hover { background: #ccfbf1; transform: translateX(5px); border-color: #14b8a6; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #14b8a6; border-radius: 5px; text-align: left; font-size: 0.95em; color: #0f766e; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #0f766e; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>Math Set-6 📐</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #0d9488; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">अगला प्रश्न ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>निश्चित समाकलन विजेता! 🏁</h1>
+        <div style="font-size: 3em; color: #0f766e; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #14b8a6; color: white; cursor: pointer; font-weight: bold;">दोबारा शुरू करें</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. ∫[a to b] f(x) dx बराबर है:", options: ["F(b) - F(a)", "F(a) - F(b)", "F(b) + F(a)", "0"], ans: 0, reason: "कलन का आधारभूत प्रमेय: ऊपरी सीमा का मान - निचली सीमा का मान।" },
+        { q: "2. ∫[0 to π/2] sin x dx का मान क्या है?", options: ["0", "1", "-1", "π/2"], ans: 1, reason: "[-cos x] सीमा 0 से π/2 = -cos(π/2) - (-cos 0) = 0 + 1 = 1." },
+        { q: "3. ∫[a to b] f(x) dx + ∫[b to a] f(x) dx का मान क्या होगा?", options: ["2 ∫f(x) dx", "0", "1", "2F(b)"], ans: 1, reason: "सीमाएं उलटने पर चिन्ह बदल जाता है, अतः योग शून्य होगा।" },
+        { q: "4. ∫[0 to π/2] cos x dx का मान है:", options: ["1", "0", "-1", "π"], ans: 0, reason: "[sin x] सीमा 0 से π/2 = sin(π/2) - sin 0 = 1." },
+        { q: "5. ∫[2 to 3] x² dx का मान क्या है?", options: ["19/3", "5/3", "13/3", "9"], ans: 0, reason: "[x³/3] सीमा 2 से 3 = 27/3 - 8/3 = 19/3." },
+        { q: "6. निश्चित समाकलन के किस गुणधर्म को 'किंग्स प्रॉपर्टी' (King's Property) कहा जाता है?", options: ["∫[0 to a] f(x)dx = ∫[0 to a] f(a-x)dx", "∫f(x) = ∫f(t)", "∫[a to b] = ∫[a to c] + ∫[c to b]", "None"], ans: 0, reason: "यह सबसे ज्यादा उपयोग होने वाला गुणधर्म है।" },
+        { q: "7. ∫[1 to 2] (1/x) dx का मान है:", options: ["log 2", "log 1", "2", "0"], ans: 0, reason: "[log x] सीमा 1 से 2 = log 2 - log 1 = log 2 - 0 = log 2." },
+        { q: "8. ∫[-a to a] f(x) dx = 0 यदि f(x) एक ______ फलन है:", options: ["सम (Even)", "विषम (Odd)", "सतत", "अचर"], ans: 1, reason: "विषम फलन (जैसे sin x, x³) के लिए सममित सीमाओं पर मान शून्य होता है।" },
+        { q: "9. ∫[0 to 1] dx / (1 + x²) का मान क्या है?", options: ["π/2", "π/4", "1", "0"], ans: 1, reason: "[tan⁻¹ x] सीमा 0 से 1 = tan⁻¹(1) - tan⁻¹(0) = π/4." },
+        { q: "10. ∫[0 to π/2] (sin x / (sin x + cos x)) dx का मान हमेशा होता है:", options: ["π/2", "π/4", "1", "0"], ans: 1, reason: "किंग्स प्रॉपर्टी लगाने पर यह (π/2 - 0)/2 = π/4 हो जाता है।" },
+        { q: "11. ∫[a to a] f(x) dx का मान क्या होगा?", options: ["f(a)", "2f(a)", "0", "1"], ans: 2, reason: "यदि ऊपरी और निचली सीमा समान हो, तो अंतराल की लंबाई शून्य होने से समाकलन 0 होता है।" },
+        { q: "12. ∫[0 to π] cos x dx का मान है:", options: ["0", "2", "-2", "1"], ans: 0, reason: "[sin x] सीमा 0 से π = sin π - sin 0 = 0 - 0 = 0." },
+        { q: "13. ∫[0 to 1] eˣ dx का मान है:", options: ["e", "e - 1", "e + 1", "1"], ans: 1, reason: "[eˣ] सीमा 0 से 1 = e¹ - e⁰ = e - 1." },
+        { q: "14. ∫[0 to π/4] sec² x dx बराबर है:", options: ["1", "0", "π/4", "√2"], ans: 0, reason: "[tan x] सीमा 0 से π/4 = tan(π/4) - tan 0 = 1." },
+        { q: "15. ∫[-1 to 1] |x| dx का मान क्या है?", options: ["0", "1", "2", "1/2"], ans: 1, reason: "यह सम फलन है, अतः 2 * ∫[0 to 1] x dx = 2 * [x²/2] = 1." },
+        { q: "16. ∫[0 to π/2] log(tan x) dx का मान है:", options: ["π/2", "π/4", "0", "log 2"], ans: 2, reason: "किंग्स प्रॉपर्टी लगाने पर log(tan x) + log(cot x) = log(1) = 0 बनता है।" },
+        { q: "17. ∫[a to b] f(x) dx किसके बराबर है?", options: ["∫[a to b] f(t) dt", "∫[a to b] f(y) dy", "दोनों A और B", "None"], ans: 2, reason: "निश्चित समाकलन में चर (Variable) बदलने से मान नहीं बदलता (Dummy variable property)।" },
+        { q: "18. ∫[0 to π] sin x dx का मान क्या है?", options: ["0", "1", "2", "-2"], ans: 2, reason: "[-cos x] सीमा 0 से π = -cos π - (-cos 0) = -(-1) + 1 = 2." },
+        { q: "19. ∫[0 to 2] dx / √(4 - x²) का मान है:", options: ["π/2", "π/4", "π", "None"], ans: 0, reason: "[sin⁻¹(x/2)] सीमा 0 से 2 = sin⁻¹(1) - sin⁻¹(0) = π/2." },
+        { q: "20. यदि f(x) सम फलन है, तो ∫[-a to a] f(x) dx बराबर है:", options: ["0", "2 ∫[0 to a] f(x) dx", "∫[0 to a] f(x) dx", "None"], ans: 1, reason: "सममित सीमाओं पर सम फलन का मान दुगुना हो जाता है।" },
+        { q: "21. ∫[0 to 1] x(1-x)ⁿ dx का मान किंग्स प्रॉपर्टी से होगा:", options: ["1/((n+1)(n+2))", "1/(n+1)", "0", "None"], ans: 0, reason: "∫[0 to 1] (1-x)xⁿ dx हल करने पर।" },
+        { q: "22. ∫[0 to 2π] sin x dx का मान है:", options: ["0", "1", "2", "4"], ans: 0, reason: "पूरे चक्र (Cycle) में धनात्मक और ऋणात्मक क्षेत्रफल एक दूसरे को काट देते हैं।" },
+        { q: "23. ∫[π/6 to π/3] dx / (1 + √tan x) का मान है:", options: ["π/6", "π/12", "π/4", "None"], ans: 1, reason: "सीमाओं का अंतर (b-a)/2 = (π/3 - π/6)/2 = π/12." },
+        { q: "24. ∫[0 to ∞] dx / (1 + x²) का मान है:", options: ["π", "π/2", "0", "अपरिभाषित"], ans: 1, reason: "[tan⁻¹ x] सीमा 0 से ∞ = π/2 - 0 = π/2." },
+        { q: "25. ∫[1 to √3] dx / (1 + x²) बराबर है:", options: ["π/3", "π/6", "π/12", "π/4"], ans: 2, reason: "tan⁻¹√3 - tan⁻¹ 1 = π/3 - π/4 (यदि सीमाएं 1 से √3 हैं तो π/3 - π/4 = π/12)।" },
+        { q: "26. ∫[0 to 1] dx / √(1 - x²) का मान है:", options: ["π/2", "π", "0", "1"], ans: 0, reason: "sin⁻¹(1) - sin⁻¹(0) = π/2." },
+        { q: "27. ∫[0 to 2] |x - 1| dx का मान क्या है?", options: ["0", "1", "2", "None"], ans: 1, reason: "क्षेत्रफल विधि से दो त्रिभुज (आधार 1, ऊँचाई 1) का योग 1/2 + 1/2 = 1." },
+        { q: "28. ∫[0 to π/2] sin² x dx का मान है:", options: ["π/2", "π/4", "1", "0"], ans: 1, reason: "किंग्स प्रॉपर्टी लगाने पर 2I = ∫1 dx = π/2, अतः I = π/4." },
+        { q: "29. ∫[a to b] f(x) dx = ∫[a to c] f(x) dx + ∫[c to b] f(x) dx कब सत्य है?", options: ["हमेशा", "केवल यदि a < c < b", "कभी नहीं", "केवल यदि c = 0"], ans: 0, reason: "निश्चित समाकलन को किसी भी मध्य बिंदु पर तोड़ा जा सकता है (Split property)।" },
+        { q: "30. ∫[0 to 1] (3x² + 2x + 1) dx का मान है:", options: ["1", "2", "3", "4"], ans: 2, reason: "[x³ + x² + x] सीमा 0 से 1 = 1+1+1 = 3." },
+        { q: "31. ∫[0 to π/2] log(sin x) dx का प्रसिद्ध मान क्या है?", options: ["π/2 log 2", "-(π/2) log 2", "0", "π log 2"], ans: 1, reason: "यह एक मानक परिणाम है जो बहुत बार पूछा जाता है।" },
+        { q: "32. ∫[-π/2 to π/2] sin⁷ x dx का मान है:", options: ["1", "0", "π", "None"], ans: 1, reason: "sin⁷ x एक विषम फलन (Odd function) है।" },
+        { q: "33. ∫[0 to a] f(x) dx किसके बराबर है?", options: ["∫[0 to a] f(a-x) dx", "∫[0 to a] f(x-a) dx", "-∫[0 to a] f(x) dx", "None"], ans: 0, reason: "यह निश्चित समाकलन का सबसे महत्वपूर्ण गुणधर्म है।" },
+        { q: "34. ∫[4 to 9] √x dx का मान क्या है?", options: ["38/3", "14/3", "1", "None"], ans: 0, reason: "[2/3 x^(3/2)] सीमा 4 से 9 = 2/3 (27 - 8) = 2/3 * 19 = 38/3." },
+        { q: "35. ∫[0 to π/2] dx / (1 + cot x) का मान है:", options: ["π/2", "π/4", "1", "0"], ans: 1, reason: "यह sin x / (sin x + cos x) के ही समान है।" },
+        { q: "36. ∫[0 to 1] x e^x dx का मान है:", options: ["1", "e", "e-1", "0"], ans: 0, reason: "[e^x (x-1)] सीमा 0 से 1 = 0 - (-1) = 1." },
+        { q: "37. ∫[1 to 2] x dx का मान क्या है?", options: ["1", "1.5", "2", "2.5"], ans: 1, reason: "[x²/2] सीमा 1 से 2 = 4/2 - 1/2 = 1.5." },
+        { q: "38. ∫[0 to π/2] √(sin x) / (√(sin x) + √(cos x)) dx का मान है:", options: ["π/2", "π/4", "0", "1"], ans: 1, reason: "वही प्रसिद्ध π/4 वाला प्रारूप।" },
+        { q: "39. ∫[0 to π] |cos x| dx का मान है:", options: ["0", "1", "2", "None"], ans: 2, reason: "0 से π/2 में 1 और π/2 से π में भी 1 (धनात्मक), कुल 2." },
+        { q: "40. ∫[1 to e] (1/x) dx का मान है:", options: ["e", "1", "0", "log e"], ans: 1, reason: "log e - log 1 = 1 - 0 = 1." },
+        { q: "41. ∫[0 to 2/3] dx / (4 + 9x²) का मान क्या है?", options: ["π/6", "π/12", "π/24", "None"], ans: 2, reason: "1/6 [tan⁻¹(3x/2)] सीमा 0 से 2/3 = 1/6 * π/4 = π/24." },
+        { q: "42. यदि f(2-x) = f(x) हो, तो ∫[0 to 2] x f(x) dx बराबर है:", options: ["∫[0 to 2] f(x) dx", "2 ∫[0 to 2] f(x) dx", "0", "None"], ans: 0, reason: "किंग्स प्रॉपर्टी और दी गई शर्त के उपयोग से।" },
+        { q: "43. ∫[0 to π/2] cos² x dx बराबर है:", options: ["π/2", "π/4", "1", "0"], ans: 1, reason: "sin² x की तरह इसका मान भी π/4 होता है।" },
+        { q: "44. ∫[0 to 1] (1-x)⁹ dx का मान है:", options: ["1/10", "1/9", "0", "None"], ans: 0, reason: "किंग्स प्रॉपर्टी से ∫[0 to 1] x⁹ dx = [x¹⁰/10] = 1/10." },
+        { q: "45. ∫[0 to π/2] dx / (a²cos²x + b²sin²x) का मान है:", options: ["π/2ab", "π/ab", "π/4ab", "None"], ans: 0, reason: "यह एक महत्वपूर्ण मानक समाकलन है।" },
+        { q: "46. ∫[-1 to 1] x³ dx का मान है:", options: ["1/4", "0", "1/2", "1"], ans: 1, reason: "x³ एक विषम फलन है, अतः सममित सीमाओं पर मान शून्य होगा।" },
+        { q: "47. ∫[0 to π/2] (2 log sin x - log sin 2x) dx का मान है:", options: ["π log 2", "-(π/2) log 2", "0", "None"], ans: 1, reason: "सरल करने पर यह log(sin x) वाले मानक रूप में बदल जाता है।" },
+        { q: "48. ∫[0 to π/2] sin x / (sin x + cos x) dx में π/4 उत्तर आने का कारण है:", options: ["किंग्स प्रॉपर्टी", "सिमेट्री", "दोनों", "कोई नहीं"], ans: 2, reason: "गुणधर्म और वक्र की समरूपता दोनों ही इसे π/4 बनाते हैं।" },
+        { q: "49. ∫[a to b] f(x) dx = - ∫[b to a] f(x) dx. यह गुणधर्म दर्शाता है:", options: ["दिशा का महत्व", "चिन्ह परिवर्तन", "दोनों", "कोई नहीं"], ans: 2, reason: "सीमाओं के बदलने से समाकलन का चिन्ह बदल जाता है।" },
+        { q: "50. 'Pritam Quiz' मैथ सेट 6 का अंतिम लक्ष्य:", options: ["निश्चित सफलता पाना 🚀", "मैथ से दोस्ती करना", "बोर्ड टॉपर बनना", "सभी"], ans: 3, reason: "निश्चित समाकलन की तरह आपकी मेहनत का फल भी निश्चित होगा। लगे रहो!" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 व्याख्या: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

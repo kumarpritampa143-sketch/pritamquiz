@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Set-6: Poetry & Grammar ✍️</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f3ff; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #4c1d95, #8b5cf6); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #ddd6fe; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #4c1d95; margin-bottom: 25px; line-height: 1.5; text-align: left; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #f5f3ff; border: 2px solid #ddd6fe; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #5b21b6; }
+        .option-btn:hover { background: #ede9fe; transform: translateX(5px); border-color: #8b5cf6; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #8b5cf6; border-radius: 5px; text-align: left; font-size: 0.95em; color: #4c1d95; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #4c1d95; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>English Set-6 🇬🇧</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #7c3aed; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>Poetic Soul! ✍️</h1>
+        <div style="font-size: 3em; color: #4c1d95; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #8b5cf6; color: white; cursor: pointer; font-weight: bold;">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. Who is the poet of 'Sweetest Love I Do Not Goe'?", options: ["John Donne", "Walt Whitman", "W.H. Auden", "John Keats"], ans: 0, reason: "John Donne is a famous 17th-century metaphysical poet." },
+        { q: "2. Walt Whitman is the poet of ______.", options: ["Song of Myself", "The Soldier", "Snake", "Fire-Hymn"], ans: 0, reason: "He is known as the 'People's Poet' of America." },
+        { q: "3. John Donne is a ______ poet.", options: ["Nature", "Metaphysical", "War", "Romantic"], ans: 1, reason: "Metaphysical poetry uses complex metaphors and intellect." },
+        { q: "4. Walt Whitman was born in ______.", options: ["India", "England", "America", "Canada"], ans: 2, reason: "He is a giant of American literature." },
+        { q: "5. In 'Sweetest Love...', the poet is going away from his ______.", options: ["Mother", "Sister", "Beloved", "Father"], ans: 2, reason: "The poem is addressed to his wife/beloved, Anne More." },
+        { q: "6. 'Song of Myself' was first published in a collection called ______.", options: ["Leaves of Grass", "Lyrical Ballads", "The Waste Land", "None"], ans: 0, reason: "Leaves of Grass is Whitman's most famous collection." },
+        { q: "7. The poet in 'Sweetest Love...' compares his journey to the ______.", options: ["Moon", "Sun", "Stars", "Clouds"], ans: 1, reason: "He says the sun returns every day, so he will return even faster." },
+        { q: "8. 'I celebrate myself, and sing myself' is a line from ______.", options: ["Snake", "Song of Myself", "The Soldier", "Macavity"], ans: 1, reason: "This is the opening line of Whitman's poem." },
+        { q: "9. John Donne was forced to leave ______ university because of his religion.", options: ["Oxford", "Cambridge", "Harvard", "Delhi"], ans: 0, reason: "He was a Roman Catholic in an Anglican England." },
+        { q: "10. Walt Whitman was ______ years old in 'Song of Myself'.", options: ["25", "37", "40", "50"], ans: 1, reason: "He mentions: 'I, now thirty-seven years old in perfect health begin'." },
+        { q: "11. Donne believes that man's power is ______.", options: ["Very strong", "Feeble (Weak)", "Infinite", "None"], ans: 1, reason: "He says 'O how feeble is man's power' that he cannot add an hour to his life." },
+        { q: "12. Whitman says 'Every atom belonging to me as good belongs to ______.'", options: ["God", "You", "Nature", "Him"], ans: 1, reason: "He emphasizes the universal connection between all humans." },
+        { q: "13. The beloved in 'Sweetest Love...' wastes the poet's life by ______.", options: ["Singing", "Weeping and Sighing", "Dancing", "Talking"], ans: 1, reason: "He tells her that her tears take away his life-blood." },
+        { q: "14. Walt Whitman worked as a ______ during the Civil War.", options: ["Soldier", "Nurse/Volunteer", "General", "Spy"], ans: 1, reason: "He cared for wounded soldiers in hospitals." },
+        { q: "15. Choose the correctly spelt word:", options: ["Necessery", "Necessary", "Necessary", "Necerary"], ans: 1, reason: "Correct spelling is 'Necessary'." },
+        { q: "16. Give one word: 'A person who does not believe in God.'", options: ["Theist", "Atheist", "Mortal", "Immortal"], ans: 1, reason: "Atheist is the term for a non-believer." },
+        { q: "17. John Donne died in ______.", options: ["1631", "1731", "1831", "1931"], ans: 0, reason: "He was a prominent figure of the 17th century." },
+        { q: "18. In 'Song of Myself', the poet 'loafs' and invites his ______.", options: ["Friend", "Soul", "Enemy", "Wife"], ans: 1, reason: "He says 'I loafe and invite my soul'." },
+        { q: "19. 'Sweetest Love I Do Not Goe' is a ______ poem.", options: ["War", "Love", "Hate", "Political"], ans: 1, reason: "It is a lyric poem about love and separation." },
+        { q: "20. Whitman says that he harbors for ______.", options: ["Good or Bad", "Peace", "Wealth", "Power"], ans: 0, reason: "He says 'I harbor for good or bad, I permit to speak at every hazard'." },
+        { q: "21. The sun has no ______ but the poet has.", options: ["Light", "Desire and Sense", "Heat", "Path"], ans: 1, reason: "Donne argues that since he has desire, he will return faster than the sun." },
+        { q: "22. Walt Whitman is an ______ poet.", options: ["British", "Indian", "American", "Russian"], ans: 2, reason: "Often called the 'Father of Free Verse' in America." },
+        { q: "23. 'They who one another keep Alive, ne'er ______ be.'", options: ["Dead", "Parted", "Happy", "Sad"], ans: 1, reason: "True lovers are never really separated; they are always together in spirit." },
+        { q: "24. In 'Song of Myself', 'nature' is observed in its ______.", options: ["Original check", "Beauty", "Wildness", "None"], ans: 0, reason: "Line: 'Nature without check with original energy'." },
+        { q: "25. Change into Passive: 'I know him.'", options: ["He is known by me", "He is known to me", "He was known to me", "None"], ans: 1, reason: "With 'know', we use the preposition 'to' instead of 'by' in passive." },
+        { q: "26. Synonym of 'Beautiful':", options: ["Ugly", "Pretty", "Awful", "Mean"], ans: 1, reason: "Pretty and Beautiful are synonyms." },
+        { q: "27. John Donne was a pioneer of ______ style.", options: ["Simple", "Metaphysical", "Slang", "Old"], ans: 1, reason: "He defined the metaphysical school of poetry." },
+        { q: "28. 'Song of Myself' is a poem of ______.", options: ["Despair", "Self-celebration", "Mourning", "War"], ans: 1, reason: "It celebrates the individual and the universe." },
+        { q: "29. The poet asks his beloved not to ______ his journey.", options: ["Help", "Forethink any ill", "Stop", "None"], ans: 1, reason: "He warns her not to imagine anything bad happening to him." },
+        { q: "30. The poet observes a spear of ______ in summer.", options: ["Wood", "Grass", "Iron", "Gold"], ans: 1, reason: "Line: 'Observing a spear of summer grass'." },
+        { q: "31. Idiom: 'A red letter day' means ______.", options: ["A dangerous day", "An important day", "A bloody day", "None"], ans: 1, reason: "It refers to a memorable or joyful important day." },
+        { q: "32. Choose the correctly spelt word:", options: ["Psychology", "Sychology", "Psycology", "Psycholgy"], ans: 0, reason: "The 'P' is silent in Psychology." },
+        { q: "33. John Donne's work includes songs, sonnets, and ______.", options: ["Plays", "Satires and Elegies", "Novels", "Cartoons"], ans: 1, reason: "He was famous for his deep, often critical poetry." },
+        { q: "34. Whitman's poetry is known for its ______.", options: ["Rhyme", "Rhythm and Free Verse", "Short lines", "None"], ans: 1, reason: "He broke traditional rules of rhyming." },
+        { q: "35. When the beloved sighs, she sighs the poet's ______ away.", options: ["Money", "Soul", "Hat", "Book"], ans: 1, reason: "Metaphor for deep emotional connection." },
+        { q: "36. Walt Whitman's 'Leaves of Grass' was ______ in America at first.", options: ["Famous", "Banned/Controversial", "Ignored", "None"], ans: 1, reason: "It was seen as too bold and unconventional at the time." },
+        { q: "37. He ______ (be) born in 2005.", options: ["is", "was", "has been", "were"], ans: 1, reason: "Specific past time requires 'was'." },
+        { q: "38. Antonym of 'Friend':", options: ["Ally", "Enemy", "Mate", "None"], ans: 1, reason: "Enemy is the opposite." },
+        { q: "39. Donne says that his return will be ______ than the sun.", options: ["Slower", "Speedier", "The same", "None"], ans: 1, reason: "Because he has a motive/desire to return." },
+        { q: "40. In 'Song of Myself', the poet believes in ______.", options: ["One religion", "Universal brotherhood", "War", "Money"], ans: 1, reason: "He connects himself with all of humanity." },
+        { q: "41. John Donne later became a famous ______.", options: ["Doctor", "Preacher/Dean of St. Paul's", "King", "Soldier"], ans: 1, reason: "He was a very influential religious orator." },
+        { q: "42. 'Creeds and schools in abeyance' means ______ are set aside.", options: ["Books", "Religious beliefs", "Students", "None"], ans: 1, reason: "He puts formal doctrines aside to feel nature." },
+        { q: "43. Choose the correct sentence:", options: ["She is an university student", "She is a university student", "She are a university student", "None"], ans: 1, reason: "'University' starts with a consonant sound /y/." },
+        { q: "44. Give one word: 'One who knows everything.'", options: ["Omnipotent", "Omniscient", "Omnipresent", "None"], ans: 1, reason: "Omniscient (Omni=all, Scient=knowing)." },
+        { q: "45. The poet's blood 'decays' when the beloved ______.", options: ["Sings", "Weeps", "Laughs", "Runs"], ans: 1, reason: "Line: 'When thou weep'st, unkindly kind, My life's blood doth decay'." },
+        { q: "46. Whitman celebrates ______.", options: ["The King", "Himself", "Death", "War"], ans: 1, reason: "Title: Song of Myself." },
+        { q: "47. One who dies for a noble cause is a ______.", options: ["Traitor", "Martyr", "Villain", "Mercenary"], ans: 1, reason: "Martyr (शहीद)." },
+        { q: "48. He has been waiting ______ an hour.", options: ["since", "for", "from", "at"], ans: 1, reason: "Use 'for' for a duration of time." },
+        { q: "49. Idiom: 'At the eleventh hour' means ______.", options: ["At 11 AM", "At the last moment", "Early morning", "None"], ans: 1, reason: "Doing something just before it's too late." },
+        { q: "50. Pritam's Poetic Progress:", options: ["Fluent in Poetry ✍️", "Loving English", "Topper in the making", "All of the above"], ans: 3, reason: "Excellent work! Set 6 is complete!" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 Explanation: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

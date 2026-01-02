@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Set-1: Prose & Grammar 📚</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f9ff; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #dbeafe; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #1e3a8a; margin-bottom: 25px; line-height: 1.5; text-align: left; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #f0f9ff; border: 2px solid #dbeafe; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #1e40af; }
+        .option-btn:hover { background: #eff6ff; transform: translateX(5px); border-color: #3b82f6; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #f0f9ff; border-left: 5px solid #3b82f6; border-radius: 5px; text-align: left; font-size: 0.95em; color: #1e3a8a; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #1e3a8a; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>English Set-1 🇬🇧</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #3b82f6; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>Well Done! 🎓</h1>
+        <div style="font-size: 3em; color: #1e3a8a; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #3b82f6; color: white; cursor: pointer; font-weight: bold;">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. Who wrote 'Indian Civilization and Culture'?", options: ["Dr. Zakir Hussain", "Mahatma Gandhi", "Martin Luther King Jr.", "Bertrand Russell"], ans: 1, reason: "Mahatma Gandhi wrote this essay where he compares Indian and Western civilizations." },
+        { q: "2. 'Bharat is My Home' is an extract from the speech of:", options: ["Mahatma Gandhi", "Dr. Zakir Hussain", "Jawaharlal Nehru", "Shiga Naoya"], ans: 1, reason: "Dr. Zakir Hussain delivered this speech after taking the oath as the President of India in 1967." },
+        { q: "3. Gandhi ji's spiritual weapon was:", options: ["Swords", "Guns", "Truth and Non-violence", "Nuclear bombs"], ans: 2, reason: "Truth and Non-violence (Satyagraha) were his core principles." },
+        { q: "4. According to Dr. Zakir Hussain, ______ is the prime instrument of nation building.", options: ["Politics", "Trade", "Education", "War"], ans: 2, reason: "He believed that quality education is essential for a strong nation." },
+        { q: "5. 'Civilization is that mode of conduct which points out to man the path of ______.'", options: ["Happiness", "Duty", "Progress", "Earning"], ans: 1, reason: "Gandhi ji defined civilization as pointing out the path of duty." },
+        { q: "6. Dr. Zakir Hussain was the ______ President of India.", options: ["First", "Second", "Third", "Fourth"], ans: 2, reason: "Dr. Radhakrishnan was 2nd and Dr. Zakir Hussain was the 3rd President." },
+        { q: "7. Gandhi ji went to Champaran in:", options: ["1915", "1916", "1917", "1918"], ans: 2, reason: "He went to Champaran in April 1917 to help the indigo farmers." },
+        { q: "8. 'The past is not dead and static, it is ______.'", options: ["Alive and dynamic", "Gone forever", "Useless", "A burden"], ans: 0, reason: "A famous line from 'Bharat is My Home'." },
+        { q: "9. He ______ to school every day.", options: ["go", "goes", "going", "gone"], ans: 1, reason: "Simple Present Tense with third-person singular (He/She/It) uses 'verb + s/es'." },
+        { q: "10. ______ Earth moves around the Sun.", options: ["A", "An", "The", "No article"], ans: 2, reason: "We use 'The' before unique celestial bodies." },
+        { q: "11. 'Young Italy' was an organization founded in which country?", options: ["India", "Italy", "Greece", "Rome"], ans: 1, reason: "The essay mentions the fall of civilizations like Young Italy and Greece." },
+        { q: "12. Dr. Zakir Hussain took the oath of loyalty to the:", options: ["People", "Constitution of India", "British Queen", "Political Party"], ans: 1, reason: "Presidents take the oath to protect and defend the Constitution." },
+        { q: "13. Our ancestors enjoyed ______ Rule.", options: ["British", "Colonial", "Home", "Foreign"], ans: 2, reason: "Gandhi ji says our ancestors preferred small villages and 'True Home Rule'." },
+        { q: "14. Dr. Zakir Hussain entered the office in a spirit of ______.", options: ["Greed", "Prayerful humility", "Pride", "Power"], ans: 1, reason: "He entered the office with deep dedication and humility." },
+        { q: "15. Look ______ the blackboard.", options: ["at", "on", "in", "to"], ans: 0, reason: "The correct preposition for looking at a specific point is 'at'." },
+        { q: "16. I have ______ one-rupee note.", options: ["a", "an", "the", "None"], ans: 0, reason: "'One' starts with a consonant sound /w/, so we use 'a'." },
+        { q: "17. 'My Experiments with Truth' was written by:", options: ["Jawaharlal Nehru", "Mahatma Gandhi", "Sardar Patel", "Maulana Azad"], ans: 1, reason: "This is the autobiography of Mahatma Gandhi." },
+        { q: "18. Dr. Zakir Hussain died in:", options: ["1967", "1968", "1969", "1970"], ans: 2, reason: "He died in office in May 1969." },
+        { q: "19. The mind is a restless ______, the more it gets, the more it wants.", options: ["Animal", "Bird", "Ghost", "Machine"], ans: 1, reason: "Gandhi ji used the metaphor of a 'restless bird' for the human mind." },
+        { q: "20. Radha ______ a song now.", options: ["sing", "sings", "is singing", "has sung"], ans: 2, reason: "'Now' indicates the action is happening at the moment (Present Continuous)." },
+        { q: "21. 'Pharaohs' were the rulers of ancient:", options: ["India", "Egypt", "Greece", "Russia"], ans: 1, reason: "Mentioned in 'Indian Civilization and Culture'." },
+        { q: "22. Who said 'The whole of Bharat is my home and its people are my family'?", options: ["Gandhi ji", "Dr. Zakir Hussain", "Dr. Prasad", "Dr. Radhakrishnan"], ans: 1, reason: "The title of the chapter comes from this statement in his speech." },
+        { q: "23. Our ancestors were satisfied with small ______.", options: ["Cities", "Villages", "Towns", "States"], ans: 1, reason: "They believed cities were snares and full of vice." },
+        { q: "24. Dr. Radhakrishnan never lost his faith in the essential ______ of man.", options: ["Greed", "Humanity", "Wealth", "Cruelty"], ans: 1, reason: "Mentioned by Dr. Zakir Hussain as a tribute to his predecessor." },
+        { q: "25. He is ______ M.A. in English.", options: ["a", "an", "the", "No article"], ans: 1, reason: "'M.A.' starts with a vowel sound /em/, so 'an' is used." },
+        { q: "26. Water ______ at 100°C.", options: ["boil", "boils", "boiling", "boiled"], ans: 1, reason: "Universal truths are written in Simple Present Tense." },
+        { q: "27. Modern civilization is the worship of ______.", options: ["God", "Material", "Spirit", "Ancestors"], ans: 1, reason: "Gandhi ji argues that Western civilization is based on materialism." },
+        { q: "28. Dr. Zakir Hussain served as the Governor of ______.", options: ["UP", "Punjab", "Bihar", "Bengal"], ans: 2, reason: "Before becoming President, he was the Governor of Bihar." },
+        { q: "29. Large cities were a snare and a useless encumbrance, according to ______.", options: ["Europeans", "Our ancestors", "Modern people", "Politicians"], ans: 1, reason: "Indian ancestors believed that cities encourage crime and vice." },
+        { q: "30. Education is the ______ instrument of national purpose.", options: ["Secondary", "Prime", "Useless", "Optional"], ans: 1, reason: "Core theme of Dr. Hussain's speech." },
+        { q: "31. She ______ (wait) for me since morning.", options: ["waits", "is waiting", "has been waiting", "wait"], ans: 2, reason: "'Since/For' with time indicates Present Perfect Continuous." },
+        { q: "32. This is ______ best book on the market.", options: ["a", "an", "the", "No article"], ans: 2, reason: "Use 'the' before superlative degrees (best, tallest, etc.)." },
+        { q: "33. Indian civilization is ______.", options: ["Immovable", "Movable", "Useless", "Dead"], ans: 0, reason: "Gandhi ji says it is the glory of India that its foundation remains firm (immovable)." },
+        { q: "34. Work on one's self means work for the ______.", options: ["Society", "Individual", "State", "None"], ans: 1, reason: "Dr. Zakir Hussain discusses the dual aspect of work: individual and social." },
+        { q: "35. He died ______ Cholera.", options: ["of", "from", "with", "by"], ans: 0, reason: "Die + of + disease (Standard usage)." },
+        { q: "36. Gandhi ji was more a ______ leader than a politician.", options: ["Wealthy", "Spiritual", "Violent", "Weak"], ans: 1, reason: "He was known for his moral and spiritual leadership." },
+        { q: "37. Dr. Zakir Hussain took the oath of loyalty to the Constitution of ______.", options: ["Pakistan", "Britain", "India", "America"], ans: 2, reason: "Obviously, as he was the Indian President." },
+        { q: "38. The people of Europe learn their lessons from the writings of the men of ______.", options: ["India", "China", "Greece or Rome", "Egypt"], ans: 2, reason: "Gandhi ji points out that Europeans rely on dead civilizations for guidance." },
+        { q: "39. Bharat is My Home is ______.", options: ["An essay", "A short story", "A speech", "A drama"], ans: 2, reason: "It is a speech delivered in 1967." },
+        { q: "40. I ______ (see) him yesterday.", options: ["see", "saw", "seen", "seeing"], ans: 1, reason: "'Yesterday' indicates Simple Past Tense." },
+        { q: "41. Honest men always ______ the truth.", options: ["speak", "speaks", "speaking", "spoken"], ans: 0, reason: "Plural subject (men) takes the base form of the verb." },
+        { q: "42. ______ Holy Quran is a religious book.", options: ["A", "An", "The", "None"], ans: 2, reason: "Use 'The' before names of holy books." },
+        { q: "43. Western civilization has the tendency to privilege ______.", options: ["Morality", "Materiality", "Spirituality", "Truth"], ans: 1, reason: "As opposed to Indian civilization which privileges moral being." },
+        { q: "44. Dr. Zakir Hussain was born in ______.", options: ["Aligarh", "Hyderabad", "Delhi", "Patna"], ans: 1, reason: "He was born in Hyderabad in 1897." },
+        { q: "45. Don't laugh ______ the poor.", options: ["at", "on", "for", "with"], ans: 0, reason: "The idiom is 'laugh at'." },
+        { q: "46. He is ______ honest man.", options: ["a", "an", "the", "None"], ans: 1, reason: "'Honest' starts with a vowel sound /o/ because 'h' is silent." },
+        { q: "47. Indian civilization elevates the ______.", options: ["Physical", "Moral being", "Mind", "Body"], ans: 1, reason: "Gandhi ji emphasizes moral development." },
+        { q: "48. Dr. Radhakrishnan brought to the Presidency a ______ equipment.", options: ["Physical", "Mental", "Financial", "Military"], ans: 1, reason: "Reference to his vast knowledge and scholarship." },
+        { q: "49. Choose the correctly spelt word:", options: ["Civillization", "Civilization", "Sivilization", "Civilisasion"], ans: 1, reason: "Standard spelling is 'Civilization'." },
+        { q: "50. Pritam's English Goal:", options: ["Score 95+ in English 🚀", "Just pass", "Forget English", "Play games"], ans: 0, reason: "Consistency is key, Pritam! You've started the last subject strong." }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 Explanation: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

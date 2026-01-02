@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Set-5: Integrals 📐</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf2f8; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #831843, #db2777); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #fbcfe8; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #831843; margin-bottom: 25px; line-height: 1.5; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #fff1f2; border: 2px solid #fbcfe8; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #9d174d; }
+        .option-btn:hover { background: #fdf2f8; transform: translateX(5px); border-color: #db2777; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #db2777; border-radius: 5px; text-align: left; font-size: 0.95em; color: #831843; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #831843; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>Math Set-5 📐</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #db2777; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">अगला प्रश्न ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>इंटीग्रल एक्सपर्ट! 🏆</h1>
+        <div style="font-size: 3em; color: #831843; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #db2777; color: white; cursor: pointer; font-weight: bold;">दोबारा शुरू करें</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. ∫ xⁿ dx का मान क्या है? (जहाँ n ≠ -1)", options: ["nxⁿ⁻¹", "xⁿ⁺¹ / (n+1) + C", "nxⁿ", "log x"], ans: 1, reason: "यह समाकलन का सबसे मूलभूत घात नियम (Power Rule) है।" },
+        { q: "2. ∫ (1/x) dx किसके बराबर है?", options: ["log|x| + C", "x⁻¹", "-1/x²", "eˣ"], ans: 0, reason: "चूंकि log x का अवकलन 1/x होता है, इसलिए 1/x का समाकलन log|x| है।" },
+        { q: "3. ∫ sin x dx का मान है:", options: ["cos x + C", "-cos x + C", "sec² x", "-sin x"], ans: 1, reason: "साइन का समाकलन ऋणात्मक कोसाइन होता है।" },
+        { q: "4. ∫ cos x dx का मान क्या है?", options: ["sin x + C", "-sin x + C", "tan x", "-cos x"], ans: 0, reason: "कोसाइन का समाकलन धनात्मक साइन होता है।" },
+        { q: "5. ∫ sec² x dx बराबर है:", options: ["tan x + C", "-cot x + C", "sec x tan x", "log sec x"], ans: 0, reason: "tan x का अवकलन sec² x है, अतः इसका उल्टा tan x होगा।" },
+        { q: "6. ∫ eˣ dx का मान होगा:", options: ["eˣ + C", "xeˣ⁻¹", "eˣ / x", "log eˣ"], ans: 0, reason: "eˣ एक ऐसा फलन है जिसका अवकलन और समाकलन दोनों स्वयं वही होता है।" },
+        { q: "7. ∫ aˣ dx का मान क्या है?", options: ["aˣ log a + C", "aˣ / log a + C", "x aˣ⁻¹", "aˣ"], ans: 1, reason: "जहाँ a एक धनात्मक अचर है और log का आधार e है।" },
+        { q: "8. ∫ cosec² x dx का मान है:", options: ["tan x", "-cot x + C", "cot x", "-cosec x"], ans: 1, reason: "cot x का अवकलन -cosec² x होता है।" },
+        { q: "9. ∫ sec x tan x dx किसके बराबर है?", options: ["sec x + C", "tan x", "sec² x", "log sec x"], ans: 0, reason: "यह sec x का अवकलन परिणाम है।" },
+        { q: "10. ∫ dx / (1 + x²) का मान है:", options: ["sin⁻¹ x", "tan⁻¹ x + C", "cos⁻¹ x", "log(1+x²)"], ans: 1, reason: "यह प्रतिलोम त्रिकोणमितीय फलन tan⁻¹ x का मानक समाकलन है।" },
+        { q: "11. ∫ dx / √(1 - x²) का मान क्या है?", options: ["sin⁻¹ x + C", "cos⁻¹ x", "tan⁻¹ x", "log x"], ans: 0, reason: "यह sin⁻¹ x का मानक समाकलन सूत्र है।" },
+        { q: "12. ∫ tan x dx बराबर है:", options: ["sec² x", "log|sec x| + C", "log|sin x|", "None"], ans: 1, reason: "इसे sin x / cos x लिखकर प्रतिस्थापन विधि से हल किया जाता है।" },
+        { q: "13. ∫ cot x dx का मान है:", options: ["-cosec² x", "log|sin x| + C", "log|cos x|", "tan x"], ans: 1, reason: "इसे cos x / sin x लिखकर हल किया जाता है।" },
+        { q: "14. ∫ (u + v) dx किसके बराबर है?", options: ["∫u dx + ∫v dx", "∫u dx * ∫v dx", "uv", "None"], ans: 0, reason: "समाकलन योग के नियम का पालन करता है।" },
+        { q: "15. ∫ k f(x) dx का मान क्या है? (जहाँ k अचर है)", options: ["k² ∫f(x) dx", "k ∫f(x) dx", "0", "f(x) + k"], ans: 1, reason: "अचर राशि को समाकलन चिन्ह से बाहर निकाला जा सकता है।" },
+        { q: "16. ∫ 0 dx का मान क्या होगा?", options: ["0", "C (अचर)", "1", "x"], ans: 1, reason: "किसी अचर का अवकलन शून्य होता है, अतः शून्य का समाकलन अचर है।" },
+        { q: "17. ∫ 1 dx (या ∫ dx) का मान है:", options: ["0", "x + C", "1", "x²/2"], ans: 1, reason: "x का अवकलन 1 होता है।" },
+        { q: "18. ∫ dx / (x² - a²) का सूत्र है:", options: ["(1/2a) log|(x-a)/(x+a)| + C", "(1/a) tan⁻¹(x/a)", "sin⁻¹(x/a)", "None"], ans: 0, reason: "यह आंशिक भिन्न विधि से प्राप्त एक मानक सूत्र है।" },
+        { q: "19. ∫ dx / (x² + a²) बराबर है:", options: ["(1/a) tan⁻¹(x/a) + C", "tan⁻¹(x/a)", "log(x²+a²)", "None"], ans: 0, reason: "यह tan⁻¹ x के सूत्र का व्यापक रूप है।" },
+        { q: "20. ∫ dx / √(x² + a²) का मान क्या है?", options: ["log|x + √(x²+a²)| + C", "sin⁻¹(x/a)", "sinh⁻¹(x/a)", "दोनों A और C"], ans: 3, reason: "यह लघुगणक और अतिपरवलयिक (Hyperbolic) दोनों रूपों में लिखा जा सकता है।" },
+        { q: "21. खंडशः समाकलन (Integration by Parts) में ∫ uv dx = ?", options: ["u∫v dx - ∫[u' ∫v dx] dx", "uv - ∫u'v'", "u'v + uv'", "None"], ans: 0, reason: "इसे ILATE नियम की मदद से हल किया जाता है।" },
+        { q: "22. ∫ eˣ (f(x) + f'(x)) dx का मान हमेशा होता है:", options: ["eˣ f(x) + C", "eˣ f'(x) + C", "f(x) + C", "eˣ + C"], ans: 0, reason: "यह एक बहुत ही महत्वपूर्ण शॉर्टकट सूत्र है।" },
+        { q: "23. ∫ dx / (a² - x²) किसके बराबर है?", options: ["(1/2a) log|(a+x)/(a-x)| + C", "(1/2a) log|(x-a)/(x+a)|", "sin⁻¹(x/a)", "None"], ans: 0, reason: "ध्यान रहे यहाँ हर में (a-x) है।" },
+        { q: "24. ∫ √(a² - x²) dx का मान क्या है?", options: ["(x/2)√(a²-x²) + (a²/2)sin⁻¹(x/a) + C", "sin⁻¹(x/a)", "√(a²-x²)", "None"], ans: 0, reason: "यह क्षेत्रफल निकालने में बहुत उपयोगी सूत्र है।" },
+        { q: "25. ∫ sec x dx बराबर है:", options: ["tan x", "log|sec x + tan x| + C", "log|sec x|", "None"], ans: 1, reason: "इसे (sec x + tan x) से गुणा-भाग करके प्राप्त किया जाता है।" },
+        { q: "26. ∫ cosec x dx का मान है:", options: ["log|cosec x - cot x| + C", "log|tan(x/2)| + C", "दोनों A और B", "None"], ans: 2, reason: "ये दोनों ही cosec x के समाकलन के वैध रूप हैं।" },
+        { q: "27. ∫ log x dx का मान क्या होगा?", options: ["1/x", "x log x - x + C", "x log x", "None"], ans: 1, reason: "इसे खंडशः समाकलन (1 * log x) द्वारा हल किया जाता है।" },
+        { q: "28. ∫ dx / √(x² - a²) का मान है:", options: ["log|x + √(x²-a²)| + C", "cos⁻¹(x/a)", "sec⁻¹(x/a)", "None"], ans: 0, reason: "मानक सूत्र।" },
+        { q: "29. ∫ sin³ x dx का मान निकालने के लिए किस सूत्र का उपयोग करते हैं?", options: ["sin 3x", "cos 3x", "sin² x", "None"], ans: 0, reason: "sin 3x = 3sin x - 4sin³ x सूत्र से sin³ x का मान निकाला जाता है।" },
+        { q: "30. ∫ dx / sin² x cos² x बराबर है:", options: ["tan x - cot x + C", "tan x + cot x", "sin x + cos x", "None"], ans: 0, reason: "अंश में 1 को (sin² x + cos² x) लिखकर हल करने पर।" },
+        { q: "31. ∫ √(x² + a²) dx का मान है:", options: ["(x/2)√(x²+a²) + (a²/2)log|x+√(x²+a²)| + C", "log|x+√(x²+a²)|", "None", "x/2 √(x²+a²)"], ans: 0, reason: "लंबा लेकिन महत्वपूर्ण मानक सूत्र।" },
+        { q: "32. ∫ e^(ax) dx का मान क्या है?", options: ["e^(ax) + C", "(1/a) e^(ax) + C", "a e^(ax)", "None"], ans: 1, reason: "अक्ष के गुणांक से भाग दिया जाता है।" },
+        { q: "33. ∫ sin(ax + b) dx बराबर है:", options: ["-cos(ax+b) / a + C", "cos(ax+b) / a", "-a cos(ax+b)", "None"], ans: 0, reason: "रैखिक प्रतिस्थापन के कारण 1/a बाहर आता है।" },
+        { q: "34. ∫ dx / (x √ (x² - 1)) का मान है:", options: ["sin⁻¹ x", "sec⁻¹ x + C", "tan⁻¹ x", "cosec⁻¹ x"], ans: 1, reason: "यह sec⁻¹ x का मानक अवकलज परिणाम है।" },
+        { q: "35. ∫ (tan⁻¹ x + cot⁻¹ x) dx का मान क्या होगा?", options: ["0", "(π/2)x + C", "π/2", "x + C"], ans: 1, reason: "योग अचर (π/2) है, जिसका समाकलन (π/2)x होता है।" },
+        { q: "36. ∫ (x² + 1) / x dx का मान है:", options: ["x²/2 + log x + C", "x + 1/x", "x²/2 + 1", "None"], ans: 0, reason: "पदों को अलग करने पर ∫x dx + ∫(1/x) dx प्राप्त होता है।" },
+        { q: "37. ∫ √(x) dx किसके बराबर है?", options: ["(2/3) x^(3/2) + C", "1/2√x", "x^(3/2)", "None"], ans: 0, reason: "x^(1/2) पर घात नियम लगाने पर।" },
+        { q: "38. ∫ sin² x dx का मान निकालने हेतु प्रयुक्त सूत्र है:", options: ["1 - cos 2x = 2sin² x", "1 + cos 2x = 2cos² x", "sin 2x = 2sin x cos x", "None"], ans: 0, reason: "द्विघात को रैखिक घात में बदलने के लिए इसका उपयोग होता है।" },
+        { q: "39. ILATE नियम में 'L' का क्या अर्थ है?", options: ["Linear", "Logarithmic (लघुगणकीय)", "Last", "Late"], ans: 1, reason: "खंडशः समाकलन में फलन चुनने का क्रम (Inverse, Log, Algebraic, Trig, Expo)।" },
+        { q: "40. ∫ dx / (x log x) का मान है:", options: ["log|log x| + C", "1 / (log x)²", "log x", "None"], ans: 0, reason: "log x = t मानकर प्रतिस्थापन करने पर।" },
+        { q: "41. ∫ 2^x dx का मान क्या है?", options: ["2^x + C", "2^x / log 2 + C", "2^x log 2", "x 2^(x-1)"], ans: 1, reason: "यह ∫ aˣ dx के सूत्र पर आधारित है।" },
+        { q: "42. ∫ (sec x / (sec x + tan x)) dx बराबर है:", options: ["tan x - sec x + C", "log|sec x + tan x|", "sec x + tan x", "None"], ans: 0, reason: "संयुग्मी (Conjugate) से गुणा करने या सरल करने पर।" },
+        { q: "43. ∫ dx / √(a² + x²) का मान क्या है?", options: ["log|x + √(a²+x²)| + C", "tan⁻¹(x/a)", "sin⁻¹(x/a)", "None"], ans: 0, reason: "मानक सूत्र।" },
+        { q: "44. ∫ x eˣ dx का मान है:", options: ["eˣ (x - 1) + C", "eˣ (x + 1)", "x eˣ", "None"], ans: 0, reason: "खंडशः समाकलन द्वारा।" },
+        { q: "45. ∫ (1 - sin x) / cos² x dx बराबर है:", options: ["tan x - sec x + C", "tan x + sec x", "sec x - tan x", "None"], ans: 0, reason: "∫sec² x dx - ∫sec x tan x dx करने पर।" },
+        { q: "46. ∫ dx / (1 + cos x) का मान है:", options: ["tan(x/2) + C", "cot(x/2)", "sin x", "None"], ans: 0, reason: "1 + cos x = 2cos²(x/2) सूत्र का उपयोग करने पर।" },
+        { q: "47. ∫ cos √x / √x dx का मान है:", options: ["2 sin √x + C", "sin √x", "√x sin √x", "None"], ans: 0, reason: "√x = t मानने पर dx / √x = 2 dt हो जाता है।" },
+        { q: "48. समाकलन स्थिरांक 'C' क्यों जोड़ा जाता है?", options: ["सुंदरता के लिए", "क्योंकि अचर का अवकलन शून्य होता है", "मैथ का नियम है", "कोई नहीं"], ans: 1, reason: "अनिश्चित समाकलन में मूल फलन के साथ कोई भी अचर हो सकता है।" },
+        { q: "49. ∫ e^x (1/x - 1/x²) dx का मान क्या है?", options: ["e^x / x + C", "-e^x / x²", "e^x log x", "None"], ans: 0, reason: "यहाँ f(x) = 1/x और f'(x) = -1/x² है।" },
+        { q: "50. 'Pritam Quiz' मैथ सेट 5 का अंतिम संदेश:", options: ["समाकलन का अभ्यास ही टॉपर बनाएगा 🚀", "मैथ से डरना जरूरी है", "कल से पढ़ेंगे", "कोई नहीं"], ans: 0, reason: "बधाई हो प्रीतम! आपने समाकलन के 50 बेसिक्स पूरे किए।" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 व्याख्या: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

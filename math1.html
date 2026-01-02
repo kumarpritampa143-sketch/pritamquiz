@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Set-1: Relations & ITFs 📐</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #0f172a, #334155); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #e2e8f0; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #0f172a; margin-bottom: 25px; line-height: 1.5; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #f1f5f9; border: 2px solid #e2e8f0; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #1e293b; }
+        .option-btn:hover { background: #e2e8f0; transform: translateX(5px); border-color: #334155; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #334155; border-radius: 5px; text-align: left; font-size: 0.95em; color: #0f172a; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #0f172a; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>Math Set-1 📐</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #64748b; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">अगला प्रश्न ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>गणित के जादूगर! 🔮</h1>
+        <div style="font-size: 3em; color: #0f172a; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #334155; color: white; cursor: pointer; font-weight: bold;">फिर से शुरू करें</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. sin⁻¹(1/2) का मुख्य मान (Principal value) क्या है?", options: ["π/3", "π/6", "π/4", "π/2"], ans: 1, reason: "sin(π/6) = 1/2 होता है, और π/6 रेंज [-π/2, π/2] में है।" },
+        { q: "2. यदि f: A -> B एक आच्छादक फलन (Onto function) है, तो:", options: ["f(A) ⊂ B", "f(A) = B", "B ⊂ f(A)", "कोई नहीं"], ans: 1, reason: "आच्छादक फलन में परिसर (Range) और सह-प्रांत (Codomain) बराबर होते हैं।" },
+        { q: "3. tan⁻¹(1) का मान है:", options: ["π/4", "π/2", "π/3", "π/6"], ans: 0, reason: "tan(π/4) = 1 होता है।" },
+        { q: "4. cos⁻¹(-1/2) का मुख्य मान क्या है?", options: ["π/3", "2π/3", "π/6", "4π/3"], ans: 1, reason: "cos⁻¹(-x) = π - cos⁻¹(x). अतः π - π/3 = 2π/3." },
+        { q: "5. समुच्चय A = {1, 2, 3} पर कुल कितने भिन्न सम्बन्ध परिभाषित हो सकते हैं?", options: ["2³", "2⁶", "2⁹", "9²"], ans: 2, reason: "कुल सम्बन्धों की संख्या 2^(n×n) होती है। यहाँ 2^(3×3) = 2⁹।" },
+        { q: "6. sin(sin⁻¹ x) का मान क्या होगा?", options: ["x", "1/x", "sin x", "cos x"], ans: 0, reason: "sin और sin⁻¹ एक दूसरे के प्रतिलोम हैं, इसलिए परिणाम x होगा।" },
+        { q: "7. f(x) = 2x + 3 द्वारा परिभाषित फलन f: R -> R कैसा है?", options: ["एकैकी आच्छादक", "बहुएक आच्छादक", "एकैकी अंतःक्षेपी", "कोई नहीं"], ans: 0, reason: "रैखिक फलन (Linear function) हमेशा एकैकी और आच्छादक होते हैं।" },
+        { q: "8. tan⁻¹ x + cot⁻¹ x का मान क्या होता है?", options: ["π", "π/2", "0", "2π"], ans: 1, reason: "यह एक त्रिकोणमितीय सर्वसमिका है जहाँ x ∈ R." },
+        { q: "9. sin⁻¹ x + cos⁻¹ x का मान क्या है?", options: ["π/4", "π/2", "π", "1"], ans: 1, reason: "यह मानक सूत्र है, बशर्ते x ∈ [-1, 1]." },
+        { q: "10. यदि f(x) = x² और g(x) = sin x, तो (gof)(x) क्या होगा?", options: ["sin² x", "sin x²", "x² sin x", "कोई नहीं"], ans: 1, reason: "g(f(x)) = g(x²) = sin(x²)." },
+        { q: "11. समुच्चय {a, b} पर कितने द्विआधारी संक्रियाएं (Binary operations) संभव हैं?", options: ["4", "8", "16", "32"], ans: 2, reason: "सूत्र n^(n²) के अनुसार, 2^(2²) = 2⁴ = 16." },
+        { q: "12. cos⁻¹(cos 7π/6) का मान क्या है?", options: ["7π/6", "5π/6", "π/6", "None"], ans: 1, reason: "cos⁻¹ की रेंज [0, π] है। 7π/6 रेंज से बाहर है, अतः cos(2π - 5π/6) = cos 5π/6." },
+        { q: "13. यदि A = {1, 2}, तो A पर कितने एकैकी फलन (One-to-one functions) बन सकते हैं?", options: ["1", "2", "4", "8"], ans: 1, reason: "n! = 2! = 2." },
+        { q: "14. tan⁻¹(√3) - sec⁻¹(-2) का मान है:", options: ["π", "-π/3", "π/3", "2π/3"], ans: 1, reason: "π/3 - (π - π/3) = π/3 - 2π/3 = -π/3." },
+        { q: "15. समुच्चय A पर सम्बन्ध R = {(1,1), (2,2), (3,3)} कैसा सम्बन्ध है?", options: ["स्वतुल्य (Reflexive)", "सममित", "संक्रामक", "तुल्यता (Equivalence)"], ans: 3, reason: "यह तीनों शर्तों को पूरा करता है, इसलिए तुल्यता सम्बन्ध है।" },
+        { q: "16. 2 tan⁻¹ x किसके बराबर है?", options: ["tan⁻¹(2x / (1-x²))", "sin⁻¹(2x / (1+x²))", "cos⁻¹((1-x²) / (1+x²))", "उपरोक्त सभी"], ans: 3, reason: "2 tan⁻¹ x के ये तीनों ही रूपांतरण सूत्र सही हैं।" },
+        { q: "17. sin⁻¹(-x) बराबर होता है:", options: ["sin⁻¹ x", "-sin⁻¹ x", "π - sin⁻¹ x", "cos⁻¹ x"], ans: 1, reason: "sin⁻¹ एक विषम फलन (Odd function) है।" },
+        { q: "18. cos⁻¹(-x) बराबर होता है:", options: ["-cos⁻¹ x", "π - cos⁻¹ x", "cos⁻¹ x", "π/2 - cos⁻¹ x"], ans: 1, reason: "cos⁻¹ की मुख्य शाखा 0 से π तक होती है।" },
+        { q: "19. फलन f(x) = √ (x - 1) का प्रांत (Domain) क्या है?", options: ["x > 1", "x ≥ 1", "x < 1", "R"], ans: 1, reason: "वर्गमूल के अंदर की संख्या ऋणात्मक नहीं होनी चाहिए।" },
+        { q: "20. tan⁻¹(x/y) - tan⁻¹((x-y)/(x+y)) का मान है:", options: ["π/2", "π/3", "π/4", "3π/4"], ans: 2, reason: "इसे tan⁻¹ A - tan⁻¹ B सूत्र से हल करने पर π/4 प्राप्त होता है।" },
+        { q: "21. समुच्चय A = {a, b, c} पर सम्बन्ध R = {(a,b), (b,a)} कैसा है?", options: ["स्वतुल्य", "सममित (Symmetric)", "संक्रामक", "तुल्यता"], ans: 1, reason: "चूंकि (a,b) के लिए (b,a) मौजूद है।" },
+        { q: "22. cosec⁻¹ x + sec⁻¹ x का मान है:", options: ["π", "π/2", "0", "None"], ans: 1, reason: "यह एक पूरक कोण सर्वसमिका है।" },
+        { q: "23. f: R -> R, f(x) = 3x - 4 हो तो f⁻¹(x) होगा:", options: ["(x+4)/3", "x/3 + 4", "3x + 4", "None"], ans: 0, reason: "y = 3x - 4 मानकर x का मान y के पदों में निकालें।" },
+        { q: "24. sin⁻¹ (sin 2π/3) का मान है:", options: ["2π/3", "π/3", "π/6", "-π/3"], ans: 1, reason: "sin(2π/3) = sin(π - π/3) = sin(π/3). π/3 रेंज में है।" },
+        { q: "25. यदि A = {1, 2, 3}, तो A पर सबसे छोटा तुल्यता सम्बन्ध है:", options: ["A × A", "{(1,1), (2,2), (3,3)}", "{(1,2), (2,1)}", "शून्य समुच्चय"], ans: 1, reason: "तत्समक सम्बन्ध (Identity relation) सबसे छोटा तुल्यता सम्बन्ध होता है।" },
+        { q: "26. tan⁻¹(2x / (1-x²)) किसका सूत्र है?", options: ["tan⁻¹ 2x", "2 tan⁻¹ x", "sin⁻¹ 2x", "None"], ans: 1, reason: "यह tan 2θ के सूत्र से प्रेरित है।" },
+        { q: "27. cot(tan⁻¹ x + cot⁻¹ x) का मान क्या है?", options: ["1", "0", "∞", "undefined"], ans: 1, reason: "cot(π/2) = 0 होता है।" },
+        { q: "28. यदि n(A) = 3, तो A से A पर कुल फलनों की संख्या है:", options: ["3", "9", "27", "81"], ans: 2, reason: "सूत्र n^n के अनुसार, 3³ = 27।" },
+        { q: "29. sin(tan⁻¹ x) का मान जहाँ |x| < 1 है:", options: ["x / √(1-x²)", "1 / √(1-x²)", "1 / √(1+x²)", "x / √(1+x²)"], ans: 3, reason: "tan⁻¹ x को sin⁻¹ के रूप में बदलने पर।" },
+        { q: "30. समुच्चय A = {1, 2, 3} पर सम्बन्ध R = {(1,2)} कैसा है?", options: ["सममित", "संक्रामक (Transitive)", "स्वतुल्य", "None"], ans: 1, reason: "यह संक्रामक है क्योंकि संक्रामकता की शर्त तोड़ने वाला कोई जोड़ा (जैसे (2,3)) यहाँ नहीं है।" },
+        { q: "31. cos⁻¹(1/2) + 2 sin⁻¹(1/2) का मान है:", options: ["π/4", "π/3", "2π/3", "π/2"], ans: 2, reason: "π/3 + 2(π/6) = π/3 + π/3 = 2π/3." },
+        { q: "32. f(x) = |x| फलन कैसा है?", options: ["एकैकी", "अनेक-एक (Many-one)", "आच्छादक", "कोई नहीं"], ans: 1, reason: "f(1) = 1 और f(-1) = 1, दो इनपुट का एक ही आउटपुट है।" },
+        { q: "33. sin⁻¹ x का प्रांत (Domain) क्या है?", options: ["[0, 1]", "[-1, 1]", "R", "[-π/2, π/2]"], ans: 1, reason: "साइन का मान -1 और 1 के बीच ही रहता है।" },
+        { q: "34. cos⁻¹ x का परिसर (Range) क्या है?", options: ["[0, π]", "[-π/2, π/2]", "(0, π)", "None"], ans: 0, reason: "कोसाइन का प्रतिलोम 0 से π के बीच मुख्य मान देता है।" },
+        { q: "35. tan⁻¹ √3 - cot⁻¹ (-√3) का मान है:", options: ["π", "-π/2", "0", "2√3"], ans: 1, reason: "π/3 - (π - π/6) = π/3 - 5π/6 = -3π/6 = -π/2." },
+        { q: "36. पूर्णांकों के समुच्चय Z पर a R b ⇔ a - b सम है। यह सम्बन्ध है:", options: ["केवल स्वतुल्य", "केवल सममित", "केवल संक्रामक", "तुल्यता सम्बन्ध"], ans: 3, reason: "यह एक मानक तुल्यता सम्बन्ध है।" },
+        { q: "37. sin⁻¹ (1/x) किसके बराबर है?", options: ["cos⁻¹ x", "cosec⁻¹ x", "tan⁻¹ x", "sin x"], ans: 1, reason: "व्युत्क्रम सम्बन्ध सूत्र।" },
+        { q: "38. यदि f(x) = 8x³ और g(x) = x^(1/3), तो fog(x) है:", options: ["8x", "x", "8x³", "कोई नहीं"], ans: 0, reason: "f(x^(1/3)) = 8(x^(1/3))³ = 8x." },
+        { q: "39. tan⁻¹ (2/11) + tan⁻¹ (7/24) बराबर है:", options: ["tan⁻¹ (1/2)", "tan⁻¹ (1/3)", "π/4", "None"], ans: 0, reason: "tan⁻¹((2/11 + 7/24) / (1 - 14/264)) = tan⁻¹(1/2)." },
+        { q: "40. sec²(tan⁻¹ 2) + cosec²(cot⁻¹ 3) का मान है:", options: ["5", "10", "15", "13"], ans: 2, reason: "(1 + tan²(tan⁻¹ 2)) + (1 + cot²(cot⁻¹ 3)) = 1 + 4 + 1 + 9 = 15." },
+        { q: "41. एक फलन f: A -> B एकैकी (One-one) होगा यदि:", options: ["f(x₁) = f(x₂) ⇔ x₁ = x₂", "x₁ = x₂ ⇔ f(x₁) = f(x₂)", "A = B", "None"], ans: 0, reason: "यह एकैकी फलन की गणितीय परिभाषा है।" },
+        { q: "42. cos⁻¹ (4/5) + cos⁻¹ (12/13) का मान है:", options: ["cos⁻¹ (33/65)", "cos⁻¹ (63/65)", "π/2", "None"], ans: 0, reason: "cos⁻¹(xy - √(1-x²)√(1-y²)) सूत्र द्वारा।" },
+        { q: "43. tan⁻¹ x का परिसर क्या है?", options: ["[-π/2, π/2]", "(-π/2, π/2)", "[0, π]", "R"], ans: 1, reason: "इसमें -π/2 और π/2 शामिल नहीं होते क्योंकि वहां tan अपरिभाषित है।" },
+        { q: "44. यदि f(x) = sin x, तो फलन का परिसर है:", options: ["R", "[-1, 1]", "(-1, 1)", "[0, 1]"], ans: 1, reason: "साइन का अधिकतम मान 1 और न्यूनतम -1 होता है।" },
+        { q: "45. sin⁻¹ (sin 10) का मान है:", options: ["10", "3π - 10", "10 - 3π", "None"], ans: 1, reason: "10 रेडियन लगभग 573° है। मुख्य मान में लाने पर 3π - 10 प्राप्त होता है।" },
+        { q: "46. cos(sec⁻¹ x + cosec⁻¹ x) का मान है:", options: ["1", "0", "-1", "None"], ans: 1, reason: "cos(π/2) = 0." },
+        { q: "47. समुच्चय A = {1, 2, 3} पर सम्बन्ध R = {(1,1), (2,2)} कैसा है?", options: ["स्वतुल्य", "सममित", "संक्रामक", "कोई नहीं"], ans: 2, reason: "यह स्वतुल्य नहीं है क्योंकि (3,3) नहीं है, पर संक्रामक है।" },
+        { q: "48. tan⁻¹ (1/2) + tan⁻¹ (1/4) बराबर है:", options: ["tan⁻¹ (6/7)", "tan⁻¹ (5/7)", "tan⁻¹ (3/4)", "None"], ans: 0, reason: "tan⁻¹((1/2+1/4)/(1-1/8)) = tan⁻¹((3/4)/(7/8)) = tan⁻¹(6/7)." },
+        { q: "49. sin⁻¹ (1/√2) का मान है:", options: ["π/4", "π/3", "π/2", "π/6"], ans: 0, reason: "sin 45° = 1/√2." },
+        { q: "50. 'Pritam Quiz' मैथ सेट 1 का लक्ष्य:", options: ["मैथ में 100/100 लाना 🚀", "कैलकुलेशन सुधारना", "सिर्फ पास होना", "कोई नहीं"], ans: 0, reason: "अभ्यास ही गणित में पूर्णता लाता है, प्रीतम! लगे रहो।" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 व्याख्या: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

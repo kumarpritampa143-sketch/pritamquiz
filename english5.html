@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Set-5: Prose & Grammar 📚</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0fdf4; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #166534, #22c55e); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #bbf7d0; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #14532d; margin-bottom: 25px; line-height: 1.5; text-align: left; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #f0fdf4; border: 2px solid #bbf7d0; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #166534; }
+        .option-btn:hover { background: #dcfce7; transform: translateX(5px); border-color: #22c55e; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #22c55e; border-radius: 5px; text-align: left; font-size: 0.95em; color: #14532d; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #166534; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>English Set-5 🇬🇧</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #15803d; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>Amazing Job! 🌍</h1>
+        <div style="font-size: 3em; color: #166534; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #22c55e; color: white; cursor: pointer; font-weight: bold;">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. Who wrote the short story 'The Earth'?", options: ["H.E. Bates", "Pearl S. Buck", "Anton Chekhov", "Bertrand Russell"], ans: 0, reason: "H.E. Bates was an English writer known for his stories about the countryside." },
+        { q: "2. 'India Through a Traveller's Eyes' is written by:", options: ["Shiga Naoya", "Pearl S. Buck", "Germaine Greer", "Dorothy L. Sayers"], ans: 1, reason: "Pearl S. Buck was an American author who won the Nobel Prize in Literature." },
+        { q: "3. Benjy's parents were ______.", options: ["Rich", "Landlords", "Tenant Farmers", "Teachers"], ans: 2, reason: "They were simple tenant farmers who had a deep love for their land." },
+        { q: "4. Pearl S. Buck came to India to see the ______.", options: ["Taj Mahal", "Cities", "Peasants and the Young Intellectuals", "Monuments"], ans: 2, reason: "She wanted to understand India's struggle for independence through its people." },
+        { q: "5. Benjy was the son of ______.", options: ["Johnson", "Sohanlal", "Nanukaka", "Ratiram"], ans: 0, reason: "Mr. Johnson was Benjy's father." },
+        { q: "6. According to Pearl S. Buck, the real India lives in its ______.", options: ["Cities", "Villages", "Palaces", "Markets"], ans: 1, reason: "She believed the heart of India lay in the rural peasant community." },
+        { q: "7. Benjy's parents advised him to keep ______.", options: ["Cows", "Hens", "Dogs", "Cats"], ans: 1, reason: "They hoped the business of keeping hens would help his mental development." },
+        { q: "8. Pearl S. Buck was born in ______.", options: ["India", "England", "America", "China"], ans: 2, reason: "She was American by birth but spent much of her life in China." },
+        { q: "9. He is blind ______ one eye.", options: ["of", "to", "in", "with"], ans: 0, reason: "The correct preposition for a physical defect is 'blind of'." },
+        { q: "10. He is blind ______ his son's faults.", options: ["of", "to", "in", "with"], ans: 1, reason: "When figuratively ignoring something, we use 'blind to'." },
+        { q: "11. At what age did Benjy's father hand over the passbook to him?", options: ["18", "21", "25", "30"], ans: 1, reason: "According to the story, he was given the bank-book when he attained 21 years." },
+        { q: "12. The religion of the Indian peasants is ______.", options: ["Christianity", "Hinduism", "Islam", "None"], ans: 1, reason: "Buck observed that Hinduism shaped the life and culture of the majority of peasants." },
+        { q: "13. Benjy married ______ against the wishes of his parents.", options: ["Victoria", "Florence", "Mary", "Jane"], ans: 1, reason: "Florence was an employee at his poultry farm." },
+        { q: "14. The food in Indian villages was served on ______.", options: ["Plates", "Fresh green banana leaves", "Papers", "Glass"], ans: 1, reason: "Pearl S. Buck noted this traditional way of eating in South India." },
+        { q: "15. Change into Passive: 'People speak English all over the world.'", options: ["English is spoken by people", "English is spoken all over the world", "English was spoken", "None"], ans: 1, reason: "Simple Present Passive: Object + is/am/are + V3." },
+        { q: "16. He is ______ the top of the class.", options: ["at", "on", "in", "to"], ans: 0, reason: "'At' is used for a specific position." },
+        { q: "17. What did Benjy do to his parents at the end of the story?", options: ["He helped them", "He drove them out of their house", "He gave them money", "None"], ans: 1, reason: "He heartlessly left them on the pavement in the city." },
+        { q: "18. The life-span in India was only ______ according to the author.", options: ["27 years", "40 years", "50 years", "60 years"], ans: 0, reason: "Buck mentions the low life expectancy due to poverty and lack of food." },
+        { q: "19. Benjy's father was a ______ preacher.", options: ["Local", "Town", "Famous", "Village"], ans: 0, reason: "He was a simple man who occasionally preached." },
+        { q: "20. The first person to visit Pearl S. Buck in India was a ______.", options: ["Relative", "Young Intellectual", "Peasant", "Priest"], ans: 1, reason: "She spent time discussing the future of India with educated young people." },
+        { q: "21. H.E. Bates' stories are primarily about ______.", options: ["Cities", "The Countryside", "Wars", "Space"], ans: 1, reason: "His work often depicted English rural life." },
+        { q: "22. Colonization had made the Indian people ______.", options: ["Rich", "Strong", "Sad and Poor", "Happy"], ans: 2, reason: "Buck criticizes the impact of the British rule on the common people." },
+        { q: "23. Benjy wanted to buy more ______.", options: ["Clothes", "Land", "Cars", "Toys"], ans: 1, reason: "His greed for land grew as his poultry business expanded." },
+        { q: "24. The Indian peasants were even poorer than the ______ peasants.", options: ["American", "Chinese", "Russian", "English"], ans: 1, reason: "Buck compares them to the Chinese peasants she knew well." },
+        { q: "25. Choose the correct sentence:", options: ["He has come yesterday", "He came yesterday", "He had come yesterday", "None"], ans: 1, reason: "'Yesterday' requires Simple Past Tense, not Present Perfect." },
+        { q: "26. Passive of 'Who did this?':", options: ["By whom was this done?", "By whom is this done?", "Who was this done by?", "None"], ans: 0, reason: "'Who' changes to 'By whom' and 'did' (Past) requires 'was'." },
+        { q: "27. The Johnson's land was ______.", options: ["Fertile", "Rocky", "Sandy", "None"], ans: 2, reason: "It was poor, sandy soil that required hard work." },
+        { q: "28. Pearl S. Buck says that Indians have a great ______.", options: ["Greed", "Sense of hospitality", "Anger", "Pride"], ans: 1, reason: "She was impressed by the warmth and welcome she received." },
+        { q: "29. For many years, Benjy's father had been a ______ preacher.", options: ["Local", "Global", "Strict", "None"], ans: 0, reason: "He was a 'local' preacher who trusted in God rather than hard work." },
+        { q: "30. The author found the Indian intellectuals ______.", options: ["Happy", "Angry with the British", "Ignorant", "Lazy"], ans: 1, reason: "They were frustrated with the slow progress towards freedom." },
+        { q: "31. Divide the sweets ______ the two children.", options: ["between", "among", "with", "to"], ans: 0, reason: "Use 'between' for two people." },
+        { q: "32. Divide the sweets ______ the students.", options: ["between", "among", "with", "to"], ans: 1, reason: "Use 'among' for more than two people." },
+        { q: "33. Benjy's mother was ______ about Florence.", options: ["Happy", "Uncomfortable", "Excited", "Proud"], ans: 1, reason: "She did not like Florence's appearance or influence over Benjy." },
+        { q: "34. The Indian leadership was ______.", options: ["Violent", "Non-violent", "Corrupt", "None"], ans: 1, reason: "Buck praises the non-violent path chosen by Indian leaders like Gandhi." },
+        { q: "35. Benjy's eyes were ______.", options: ["Sharp", "Blue and simple", "Red", "Black"], ans: 1, reason: "Bates describes him as having 'the simple blue eyes' of his father." },
+        { q: "36. The young intellectuals were ______ because of the Second World War.", options: ["Happy", "Disappointed", "Indifferent", "Excited"], ans: 1, reason: "They felt India was being forced into a war without its consent." },
+        { q: "37. He ______ (go) to Delhi last week.", options: ["goes", "went", "has gone", "going"], ans: 1, reason: "'Last week' indicates Simple Past." },
+        { q: "38. Synonym of 'Pardon':", options: ["Punish", "Forgive", "Scold", "Hit"], ans: 1, reason: "Both mean to excuse an offense." },
+        { q: "39. The name of Benjy's wife was ______.", options: ["Mary", "Florence", "Rosy", "Jane"], ans: 1, reason: "Florence eventually helped Benjy displace his parents." },
+        { q: "40. Pearl S. Buck has written several books on ______.", options: ["India", "China", "America", "All of these"], ans: 3, reason: "She wrote extensively about various cultures." },
+        { q: "41. Benjy's father believed in ______ more than work.", options: ["Magic", "Luck/Fate", "Science", "Education"], ans: 1, reason: "He often left things to fate or God's will." },
+        { q: "42. The author was served food on a ______ leaf.", options: ["Mango", "Banana", "Peepal", "None"], ans: 1, reason: "A typical South Indian tradition." },
+        { q: "43. Antonym of 'Success':", options: ["Win", "Failure", "Victory", "Gain"], ans: 1, reason: "Failure is the opposite of success." },
+        { q: "44. He is good ______ English.", options: ["in", "at", "on", "with"], ans: 1, reason: "The correct idiom is 'good at' something." },
+        { q: "45. Choose the correctly spelt word:", options: ["Believe", "Beleive", "Belive", "Bellieve"], ans: 0, reason: "Correct spelling is 'Believe'." },
+        { q: "46. Benjy was a ______.", options: ["Smart kid", "Cunning simpleton", "Genius", "None"], ans: 1, reason: "He appeared simple but was actually very selfish and calculating." },
+        { q: "47. India's struggle was led by ______.", options: ["A king", "The intellectuals and peasants", "Soldiers", "None"], ans: 1, reason: "Buck observed a unique unity in the movement." },
+        { q: "48. He has been ill ______ Monday.", options: ["for", "since", "from", "to"], ans: 1, reason: "Use 'since' for a specific point in time." },
+        { q: "49. Choose the correct sentence:", options: ["I like play cricket", "I like playing cricket", "I likes playing cricket", "None"], ans: 1, reason: "Verb + Gerund (playing) is the correct structure here." },
+        { q: "50. Pritam's English Progress:", options: ["Halfway to Glory! 🚀", "Still learning", "English is easy", "All of the above"], ans: 3, reason: "Pritam, you have completed the Prose section! Next up is Poetry!" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 Explanation: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

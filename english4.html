@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Set-4: Prose & Grammar 📚</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fefce8; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #713f12, #a16207); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #fef08a; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #451a03; margin-bottom: 25px; line-height: 1.5; text-align: left; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #fefce8; border: 2px solid #fef08a; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #713f12; }
+        .option-btn:hover { background: #fef9c3; transform: translateX(5px); border-color: #a16207; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #a16207; border-radius: 5px; text-align: left; font-size: 0.95em; color: #451a03; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #713f12; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>English Set-4 🇬🇧</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #a16207; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>Terrific Progress! 📰</h1>
+        <div style="font-size: 3em; color: #713f12; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #a16207; color: white; cursor: pointer; font-weight: bold;">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. Who wrote 'A Child is Born'?", options: ["Germaine Greer", "Dorothy L. Sayers", "H.E. Bates", "Pearl S. Buck"], ans: 0, reason: "Germaine Greer is a famous Australian feminist writer." },
+        { q: "2. Dorothy L. Sayers is the author of:", options: ["The Earth", "How Free is the Press", "The Artist", "India Through a Traveller's Eyes"], ans: 1, reason: "She was an English crime writer and essayist." },
+        { q: "3. In many traditional societies, a woman goes to her ______ house during pregnancy.", options: ["In-laws'", "Mother's", "Sister's", "Friend's"], ans: 1, reason: "In traditional cultures, women often return to their birth home for childbirth." },
+        { q: "4. The freedom of the press is restricted during ______.", options: ["Peace", "War", "Elections", "Festivals"], ans: 1, reason: "During wartime, governments often impose censorship for security." },
+        { q: "5. Germaine Greer was educated in ______.", options: ["India", "USA", "Australia", "England"], ans: 2, reason: "She was born and educated in Australia." },
+        { q: "6. A ______ press is the watchdog of democracy.", options: ["Controlled", "Free", "Biased", "Paid"], ans: 1, reason: "A free press ensures accountability in a democratic system." },
+        { q: "7. In Bangladesh, children are looked after by the ______.", options: ["Mother", "Father", "Whole family", "Servant"], ans: 2, reason: "The essay highlights collective child-rearing in traditional families." },
+        { q: "8. The two chief factors that control the press are the Advertisers and the ______.", options: ["Public", "Government", "Owner", "Police"], ans: 2, reason: "The interests of the owner often dictate the newspaper's policy." },
+        { q: "9. Bread and butter ______ my favorite breakfast.", options: ["is", "are", "were", "am"], ans: 0, reason: "When two nouns refer to a single idea or unit, we use a singular verb." },
+        { q: "10. Neither of the two boys ______ guilty.", options: ["is", "are", "were", "have"], ans: 0, reason: "'Neither of' takes a singular verb." },
+        { q: "11. 'A Child is Born' is an extract from Greer's book ______.", options: ["The Female Eunuch", "Sex and Destiny", "The Change", "None"], ans: 1, reason: "It explores the politics of human fertility." },
+        { q: "12. The editorial policy of a popular daily is controlled by ______ chief factors.", options: ["Two", "Three", "Four", "Five"], ans: 0, reason: "The advertisers and the owners." },
+        { q: "13. For a traditional woman, the first ______ months of pregnancy are the hardest.", options: ["Three", "Five", "Seven", "Nine"], ans: 2, reason: "According to the text, the seventh month is significant." },
+        { q: "14. Censorship is imposed during ______.", options: ["Emergency", "Flood", "Winter", "Summer"], ans: 0, reason: "Constitutional emergencies often lead to media restrictions." },
+        { q: "15. He is slow ______ he is sure.", options: ["and", "but", "or", "for"], ans: 1, reason: "The conjunction 'but' shows contrast." },
+        { q: "16. 500 rupees ______ a big amount for me.", options: ["is", "are", "were", "have"], ans: 0, reason: "Fixed amounts or distances take a singular verb." },
+        { q: "17. Sylheti women go to stay with their ______ for the last months of pregnancy.", options: ["Mother", "Husband", "Doctor", "None"], ans: 0, reason: "Reference to the culture of Bangladesh/West Bengal." },
+        { q: "18. Advertisers contribute to the ______ of the newspaper.", options: ["Revenue", "News", "Editing", "Distribution"], ans: 0, reason: "Newspapers depend heavily on ad revenue to keep costs low." },
+        { q: "19. The naming ceremony of a child is held when the child is ______ days old.", options: ["Five", "Seven", "Nine", "Ten"], ans: 1, reason: "It is a common tradition in many parts of India and Bangladesh." },
+        { q: "20. The news in the newspaper is generally ______.", options: ["Completely true", "Completely false", "Somewhat distorted", "Scientific"], ans: 2, reason: "Sayers argues that the press often sensationalizes or misrepresents news." },
+        { q: "21. A Child is Born is an ______.", options: ["Essay", "Short Story", "Poem", "Drama"], ans: 0, reason: "It is a sociological essay." },
+        { q: "22. Every newspaper is a ______ to its own master.", options: ["Slave", "King", "Friend", "Teacher"], ans: 0, reason: "Metaphor used to describe the lack of true independence." },
+        { q: "23. In traditional societies, the relationship between ______ is more important than between husband and wife.", options: ["Friends", "Mother and Child", "Neighbours", "Strangers"], ans: 1, reason: "Childbirth defines a woman's status in the family." },
+        { q: "24. Dorothy L. Sayers says that the press uses ______ to mislead readers.", options: ["Truth", "Inaccurate reporting", "Plain language", "Logic"], ans: 1, reason: "Distortion of facts is a common critique." },
+        { q: "25. He ______ (be) a doctor since 2010.", options: ["is", "was", "has been", "are"], ans: 2, reason: "'Since' indicates a period starting in the past and continuing now." },
+        { q: "26. Passive of 'He is writing a letter.':", options: ["A letter is being written by him", "A letter was being written by him", "A letter is written by him", "None"], ans: 0, reason: "Present Continuous Passive: is/am/are + being + V3." },
+        { q: "27. In the West, childbirth is considered a ______ affair.", options: ["Social", "Religious", "Medical", "Public"], ans: 2, reason: "Greer critiques the over-medicalization of birth in Western societies." },
+        { q: "28. Misleading ______ are often used in newspapers.", options: ["Headlines", "Photos", "Dates", "Names"], ans: 0, reason: "Sensational headlines often don't match the content." },
+        { q: "29. Rupthoka is a ______ told to children in Bangladesh.", options: ["Lullaby", "Fairy tale", "Poem", "Song"], ans: 1, reason: "Traditional folk stories mentioned in the chapter." },
+        { q: "30. The press can make or break ______.", options: ["Buildings", "Reputations", "Weather", "None"], ans: 1, reason: "Sayers explains the power of the press to influence public opinion." },
+        { q: "31. You ______ go there at once.", options: ["must", "can", "may", "might"], ans: 0, reason: "Command or strong advice." },
+        { q: "32. Choose the correctly spelt word:", options: ["Occassion", "Occasion", "Ocassion", "Ocasion"], ans: 1, reason: "Correct spelling is 'Occasion'." },
+        { q: "33. For a pregnant woman in a traditional society, a ______ is provided.", options: ["Nurse", "Midwife", "Robot", "None"], ans: 1, reason: "Traditional birth attendants play a key role." },
+        { q: "34. The press is free in ______.", options: ["War", "Normal times", "Famine", "None"], ans: 1, reason: "Full freedom is typically enjoyed during peacetime." },
+        { q: "35. A woman gets a new ______ when her child is born.", options: ["Dress", "Name", "House", "Job"], ans: 1, reason: "In some cultures, she is called 'Mother of [Child's Name]'." },
+        { q: "36. The press should be ______.", options: ["Dishonest", "Objective", "Sensational", "Partial"], ans: 1, reason: "The ideal role of the press is to provide unbiased facts." },
+        { q: "37. He as well as I ______ playing.", options: ["is", "am", "are", "were"], ans: 0, reason: "With 'as well as', the verb agrees with the first subject (He)." },
+        { q: "38. Synonym of 'Liberty':", options: ["Freedom", "Slavery", "Bondage", "Jail"], ans: 0, reason: "Both mean the state of being free." },
+        { q: "39. Modern Western births are ______ for the mother.", options: ["Fun", "Lonely", "Social", "Loud"], ans: 1, reason: "Greer argues they can be isolating in hospitals." },
+        { q: "40. The owner's policy is governed by ______.", options: ["News", "Money/Interest", "Logic", "Public"], ans: 1, reason: "Financial and personal interests of the owner." },
+        { q: "41. Infanticide is a result of ______.", options: ["Wealth", "Male preference", "Education", "None"], ans: 1, reason: "Greer touches upon social issues related to gender." },
+        { q: "42. Propaganda is spread through ______.", options: ["Radio", "Press", "TV", "All of the above"], ans: 3, reason: "All media can be used for spreading biased information." },
+        { q: "43. Choose the correct sentence:", options: ["She is more taller than me", "She is taller than I", "She is tallest than me", "None"], ans: 1, reason: "Double comparatives (more taller) are wrong. 'Taller than I [am]' is formal." },
+        { q: "44. Two and two ______ four.", options: ["make", "makes", "making", "None"], ans: 1, reason: "Mathematical facts usually take a singular verb (makes)." },
+        { q: "45. Antonym of 'Public':", options: ["General", "Private", "Open", "Social"], ans: 1, reason: "Private is the opposite of public." },
+        { q: "46. Give one word: 'One who believes in God.'", options: ["Atheist", "Theist", "Agnostic", "None"], ans: 1, reason: "Theist (Atheist means one who doesn't believe)." },
+        { q: "47. In traditional societies, the mother is not ______ during birth.", options: ["Happy", "Alone", "Tired", "None"], ans: 1, reason: "She is surrounded by experienced family members." },
+        { q: "48. Press can ______ a person's words.", options: ["Correct", "Garble/Distort", "Fix", "None"], ans: 1, reason: "Taking quotes out of context is a press tactic." },
+        { q: "49. Each of the students ______ a book.", options: ["has", "have", "are", "were"], ans: 0, reason: "'Each of' takes a singular verb." },
+        { q: "50. Pritam's English Progress:", options: ["Going great! 🚀", "Halfway through", "Learning fast", "All of the above"], ans: 3, reason: "Great job! You have completed 4 sets of English!" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 Explanation: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

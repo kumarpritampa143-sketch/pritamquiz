@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Set-2: Prose & Grammar 📚</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf2f8; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #831843, #db2777); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #fbcfe8; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #831843; margin-bottom: 25px; line-height: 1.5; text-align: left; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #fff1f2; border: 2px solid #fbcfe8; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #9d174d; }
+        .option-btn:hover { background: #fdf2f8; transform: translateX(5px); border-color: #db2777; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #db2777; border-radius: 5px; text-align: left; font-size: 0.95em; color: #831843; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #831843; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>English Set-2 🇬🇧</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #db2777; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>Excellent! 🌟</h1>
+        <div style="font-size: 3em; color: #831843; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #db2777; color: white; cursor: pointer; font-weight: bold;">Try Again</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. Who is the main character of 'A Pinch of Snuff'?", options: ["The Narrator", "Nanukaka", "Sohanlal", "Ratiram"], ans: 1, reason: "Nanukaka is the central character, known for his wit and lies." },
+        { q: "2. 'I Have a Dream' is a speech delivered by:", options: ["Germaine Greer", "Martin Luther King Jr.", "H.E. Bates", "Shiga Naoya"], ans: 1, reason: "He delivered this speech on the steps of the Lincoln Memorial in 1963." },
+        { q: "3. Nanukaka was the narrator's ______.", options: ["Paternal Uncle", "Maternal Uncle", "Cousin", "Friend"], ans: 1, reason: "Nanukaka was the brother of the narrator's mother." },
+        { q: "4. Martin Luther King Jr. was a Nobel Prize winner for ______.", options: ["Literature", "Peace", "Science", "Economics"], ans: 1, reason: "He won the Nobel Peace Prize in 1964 for his struggle against racial inequality." },
+        { q: "5. Nanukaka took a pinch of ______.", options: ["Sugar", "Salt", "Snuff", "Pepper"], ans: 2, reason: "As per the title, he often took a pinch of snuff when thinking of a plan." },
+        { q: "6. Martin Luther King Jr. fought for the rights of ______.", options: ["Indians", "Negroes", "French", "Chinese"], ans: 1, reason: "He was a key leader in the American Civil Rights Movement for African Americans." },
+        { q: "7. Nanukaka went to Delhi to see some ______.", options: ["Friends", "Relatives", "Ministers", "Monuments"], ans: 2, reason: "He came to Delhi specifically to meet the Welfare Minister." },
+        { q: "8. Mississippi is a ______ state in America.", options: ["Rich", "Desert", "Sweltering", "Snowy"], ans: 2, reason: "King describes it as a state sweltering with the heat of injustice." },
+        { q: "9. You ______ follow the traffic rules.", options: ["can", "may", "must", "might"], ans: 2, reason: "Must is used for obligation or strong necessity." },
+        { q: "10. He ______ swim across the river when he was young.", options: ["can", "could", "may", "might"], ans: 1, reason: "Could is used to express past ability." },
+        { q: "11. 'A Pinch of Snuff' is written by:", options: ["Manohar Malgaonkar", "Anita Desai", "R.K. Narayan", "Kamala Das"], ans: 0, reason: "Manohar Malgaonkar is an Indo-Anglian novelist and short story writer." },
+        { q: "12. In which year did Martin Luther King Jr. deliver his speech?", options: ["1953", "1963", "1973", "1943"], ans: 1, reason: "The speech was delivered during the March on Washington for Jobs and Freedom." },
+        { q: "13. Nanukaka travelled in the ______ class on a third-class ticket.", options: ["First", "Second", "A.C.", "General"], ans: 1, reason: "He managed to travel in the second class despite having a third-class ticket." },
+        { q: "14. Let freedom ring from the mighty mountains of ______.", options: ["New York", "California", "New Hampshire", "Texas"], ans: 2, reason: "A specific geographical reference from the speech." },
+        { q: "15. The narrator of 'A Pinch of Snuff' was an ______.", options: ["Under-secretary", "Officer", "Clerk", "Minister"], ans: 0, reason: "He was an under-secretary on probation." },
+        { q: "16. 'Emancipation Proclamation' gave the Negro ______.", options: ["Slavery", "Freedom from slavery", "Money", "Land"], ans: 1, reason: "It was a landmark document signed by Abraham Lincoln." },
+        { q: "17. Nanukaka handed over a cheque of ______ to a dhobi.", options: ["500 rupees", "1000 rupees", "2000 rupees", "100 rupees"], ans: 1, reason: "It was part of his plan to impress the Sikha Auto Dealers." },
+        { q: "18. Martin Luther King Jr. had ______ children.", options: ["Two", "Three", "Four", "Five"], ans: 2, reason: "He mentions his four little children in the most famous part of the speech." },
+        { q: "19. The child ______ (cry) for milk now.", options: ["cries", "is crying", "has cried", "cry"], ans: 1, reason: "Action happening at the moment uses Present Continuous." },
+        { q: "20. We ______ to help the poor.", options: ["ought", "should", "must", "can"], ans: 0, reason: "Ought is followed by 'to' and expresses moral duty." },
+        { q: "21. Nanukaka was a very ______ man.", options: ["Honest", "Clever", "Stupid", "Rich"], ans: 1, reason: "He was a master of managing situations with clever lies." },
+        { q: "22. The bank of justice is ______ according to King.", options: ["Full", "Bankrupt", "Rich", "Empty"], ans: 1, reason: "King uses the metaphor of a bad check to describe the broken promises of America." },
+        { q: "23. Nanukaka wore a ______ turban.", options: ["Red", "Orange", "Yellow", "Green"], ans: 1, reason: "He wore a Deccani silk orange turban." },
+        { q: "24. Martin Luther King Jr. was influenced by ______.", options: ["Lincoln", "Gandhi ji", "Kennedy", "Marx"], ans: 1, reason: "He adopted the principle of non-violence from Mahatma Gandhi." },
+        { q: "25. Change into Passive: 'He plays cricket.'", options: ["Cricket is played by him", "Cricket was played by him", "Cricket is play by him", "None"], ans: 0, reason: "Present Simple changes to 'is/am/are + V3'." },
+        { q: "26. Change into Passive: 'I saw a tiger.'", options: ["A tiger is seen by me", "A tiger was seen by me", "A tiger seen by me", "None"], ans: 1, reason: "Past Simple changes to 'was/were + V3'." },
+        { q: "27. Nanukaka portrayed himself as the Hereditary Astrologer of the Maharaja of ______.", options: ["Jaipur", "Ninnore", "Rewa", "Patiala"], ans: 1, reason: "He used this fake identity to meet the Welfare Minister." },
+        { q: "28. '100 years later, the Negro is still ______.'", options: ["Free", "Happy", "Languishing in the corners of American society", "Rich"], ans: 2, reason: "King highlights that even a century after emancipation, equality was not reached." },
+        { q: "29. Who was the son of Sohanlal Ratiram?", options: ["Nanukaka", "The Under-secretary", "Ratiram", "The Minister"], ans: 2, reason: "Ratiram worked in the same office as the narrator." },
+        { q: "30. Civil disobedience and non-violence are King's ______.", options: ["Weakness", "Weapons", "Mistakes", "Hobbies"], ans: 1, reason: "These were the tools he used to fight for justice." },
+        { q: "31. It ______ rain tonight.", options: ["must", "may", "can", "should"], ans: 1, reason: "May is used to express possibility." },
+        { q: "32. Choose the correctly spelt word:", options: ["Guarantee", "Gaurantee", "Garantie", "Guarenty"], ans: 0, reason: "Correct spelling is 'Guarantee'." },
+        { q: "33. Nanukaka was staying for ______ days.", options: ["Two or three", "Five", "A week", "One"], ans: 0, reason: "He told the mother he would stay for 2-3 days." },
+        { q: "34. King says that 'The life of the Negro is sadly crippled by the manacles of ______.'", options: ["Chains", "Poverty", "Segregation", "Greed"], ans: 2, reason: "Segregation (discrimination) is the word used in the text." },
+        { q: "35. Nanukaka drove a ______ car to meet the minister.", options: ["Chevrolet", "Luv-car", "Large outlandish Rolls Royce", "Fiat"], ans: 2, reason: "He hired a fancy car to look like a wealthy state person." },
+        { q: "36. Negroes are the ______ of America.", options: ["Foreigners", "Native inhabitants", "Guests", "Enemies"], ans: 1, reason: "They are an integral part of the country." },
+        { q: "37. Give one word: 'A person who writes stories.'", options: ["Poet", "Author", "Novelist", "Dramatist"], ans: 1, reason: "Author is a general term for a writer." },
+        { q: "38. Synonym of 'Abilities':", options: ["Weakness", "Skills", "Laziness", "Failure"], ans: 1, reason: "Skills represent abilities to do something well." },
+        { q: "39. The narrator's mother was very ______ about Nanukaka's arrival.", options: ["Sad", "Angry", "Excited", "Worried"], ans: 2, reason: "She was very happy that her brother was coming." },
+        { q: "40. King asks the people not to wallow in the valley of ______.", options: ["Despair", "Happiness", "Mountains", "Flowers"], ans: 0, reason: "He encourages them to have hope and continue the struggle." },
+        { q: "41. Nanukaka's most effective weapon was his ______.", options: ["Snuff", "Tongue (Speech)", "Money", "Knife"], ans: 1, reason: "His ability to talk and manipulate people was his real strength." },
+        { q: "42. 'I Have a Dream' is a part of ______.", options: ["Poetry", "Essay", "Drama", "Speech"], ans: 3, reason: "It is one of the most famous speeches in history." },
+        { q: "43. The Welfare Minister was the ______ of the Maharaja of Ninnore.", options: ["Relative", "Enemy", "Friend", "Secretary"], ans: 0, reason: "There was a marriage proposal link mentioned in the story." },
+        { q: "44. MLK Jr. wanted justice to roll down like ______.", options: ["Rain", "Waters", "Stones", "Wind"], ans: 1, reason: "A famous biblical quote used by King: 'justice roll down like waters'." },
+        { q: "45. Antonym of 'Ancient':", options: ["Old", "Modern", "Classic", "Historic"], ans: 1, reason: "Modern is the opposite of ancient." },
+        { q: "46. He ______ (die) two years ago.", options: ["dies", "died", "has died", "is dying"], ans: 1, reason: "'Ago' indicates Simple Past Tense." },
+        { q: "47. Nanukaka handed over the ______ to the narrator to carry.", options: ["Bag", "Basket", "Umbrella", "Suitcase"], ans: 1, reason: "The basket contained a kitten." },
+        { q: "48. King says 'Now is the time to make ______ a reality for all of God's children.'", options: ["Wealth", "Justice", "War", "Segregation"], ans: 1, reason: "Justice and equality were his main goals." },
+        { q: "49. Choose the correct sentence:", options: ["He is a M.A.", "He is an M.A.", "He are an M.A.", "None"], ans: 1, reason: "Vowel sound 'em' requires 'an'." },
+        { q: "50. Pritam's English Progress:", options: ["Fluent in English 🚀", "Learning daily", "Just started", "All of the above"], ans: 3, reason: "You are doing great, Pritam! 300 questions to go for English!" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 Explanation: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>

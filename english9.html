@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Set-9: Poetry & Grammar 🐾🔥</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff7ed; margin: 0; padding: 0; user-select: none; }
+        .top-bar { background: linear-gradient(135deg, #c2410c, #ea580c); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 700px; margin: 20px auto; padding: 10px; }
+        .quiz-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; border: 2px solid #fdba74; }
+        .question-text { font-size: 1.3em; font-weight: 600; color: #7c2d12; margin-bottom: 25px; line-height: 1.5; text-align: left; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { background: #fff7ed; border: 2px solid #fdba74; padding: 15px; border-radius: 10px; font-size: 1.05em; cursor: pointer; transition: all 0.2s; text-align: left; color: #9a3412; }
+        .option-btn:hover { background: #ffedd5; transform: translateX(5px); border-color: #ea580c; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation { display: none; margin-top: 20px; padding: 15px; background: #fffbeb; border-left: 5px solid #ea580c; border-radius: 5px; text-align: left; font-size: 0.95em; color: #7c2d12; }
+        .next-btn { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #c2410c; color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        .result-screen { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h2>English Set-9 🇬🇧</h2>
+    <div style="font-weight: bold;">Score: <span id="score">0</span></div>
+</div>
+
+<div class="container">
+    <div class="quiz-box" id="quiz-box">
+        <span id="q-num" style="color: #ea580c; font-weight: bold;">Question 1 of 50</span>
+        <div class="question-text" id="question">Loading...</div>
+        <div class="options-container" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➡</button>
+    </div>
+
+    <div class="result-screen" id="result-box">
+        <h1>Excellent Revison! 🐾</h1>
+        <div style="font-size: 3em; color: #c2410c; margin: 20px 0;"><span id="final-score">0</span> / 50</div>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 30px; border: none; background: #ea580c; color: white; cursor: pointer; font-weight: bold;">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "1. Who wrote 'Macavity: The Mystery Cat'?", options: ["W.H. Auden", "T.S. Eliot", "Rupert Brooke", "John Keats"], ans: 1, reason: "T.S. Eliot was a Nobel Prize-winning poet known for his complex works and this famous light verse." },
+        { q: "2. Keki N. Daruwalla is the poet of ______.", options: ["Snake", "Fire-Hymn", "The Soldier", "Ode to Autumn"], ans: 1, reason: "Daruwalla is a recipient of the Sahitya Akademi Award." },
+        { q: "3. Macavity is called 'The Hidden ______'.", options: ["Hand", "Paw", "Leg", "Eye"], ans: 1, reason: "Line: 'Macavity's a Mystery Cat: he's called the Hidden Paw'." },
+        { q: "4. Keki N. Daruwalla belongs to the ______ religion.", options: ["Hindu", "Parsi (Zoroastrian)", "Muslim", "Christian"], ans: 1, reason: "In Fire-Hymn, he describes the Parsi custom of disposing of the dead in the Tower of Silence." },
+        { q: "5. Macavity is a ______.", options: ["Dog", "Cat", "Lion", "Tiger"], ans: 1, reason: "He is described as a 'ginger cat' and a master criminal." },
+        { q: "6. 'Fire-Hymn' describes the scene of a ______.", options: ["Wedding", "Burning Ghat", "Garden", "Market"], ans: 1, reason: "The poet describes the haunting scene of dead bodies being cremated." },
+        { q: "7. Macavity is full of ______.", options: ["Honesty", "Deceitfulness", "Kindness", "Fear"], ans: 1, reason: "He breaks the law of gravity and human laws without being caught." },
+        { q: "8. The poet in 'Fire-Hymn' consigned his ______ to the flames.", options: ["Friend", "Father", "First-born child", "Brother"], ans: 2, reason: "Due to the distance of the Tower of Silence, he broke his religious custom." },
+        { q: "9. T.S. Eliot was awarded the Nobel Prize for Literature in ______.", options: ["1948", "1950", "1930", "1960"], ans: 0, reason: "He won it for his outstanding contribution to present-day poetry." },
+        { q: "10. The 'burning ghat' erupted with ______ light.", options: ["Green", "Blue", "Phosphorescent", "Golden"], ans: 2, reason: "The poem describes the eerie glow of the pyres at night." },
+        { q: "11. 'Napoleon of Crime' is a title given to ______.", options: ["Napoleon", "Macavity", "The Poet", "The Police"], ans: 1, reason: "Eliot calls Macavity the Napoleon of Crime because he manages every operation." },
+        { q: "12. The poet swore to save fire from the sin of ______.", options: ["Burning", "Forgetfulness", "Anger", "None"], ans: 1, reason: "The fire sometimes leaves 'half-burnt' fingers, which the poet calls its 'forgetfulness'." },
+        { q: "13. Macavity's footprint is not found in any ______ of Scotland Yard.", options: ["File", "Room", "Locker", "None"], ans: 0, reason: "Scotland Yard is the London police; even they have no record of him." },
+        { q: "14. Crossing the ghat, the poet and his father saw ______.", options: ["Flowers", "Embers", "Cows", "None"], ans: 1, reason: "They saw red-hot embers losing their cruel redness." },
+        { q: "15. Change into Passive: 'She has stolen my pen.'", options: ["My pen is stolen by her", "My pen was stolen by her", "My pen has been stolen by her", "None"], ans: 2, reason: "Present Perfect Passive: has/have + been + V3." },
+        { q: "16. Indirect Narration: Ram said, 'I have won.'", options: ["Ram said that he had won", "Ram says that he had won", "Ram said he has won", "None"], ans: 0, reason: "Present Perfect changes to Past Perfect in indirect speech." },
+        { q: "17. Macavity is a tall and ______ cat.", options: ["Fat", "Thin/Slender", "Short", "None"], ans: 1, reason: "Eliot describes him as a tall and thin cat with sunken eyes." },
+        { q: "18. 'I swore to save fire from the sin of ______.'", options: ["Forgetfulness", "Burning", "Forgiving", "None"], ans: 0, reason: "Final lines of the poem." },
+        { q: "19. Macavity is a 'fiend in ______ shape'.", options: ["Human", "Feline", "Animal", "None"], ans: 1, reason: "Feline means relating to cats." },
+        { q: "20. Keki N. Daruwalla was a ______ by profession.", options: ["Doctor", "Teacher", "IPS Officer", "Soldier"], ans: 2, reason: "He served in the Indian Police Service." },
+        { q: "21. When you reach the scene of crime, Macavity is ______.", options: ["Waiting", "Sleeping", "Not there", "None"], ans: 2, reason: "His signature move is vanishing before the police arrive." },
+        { q: "22. The Parsi disposal of the dead is done in the ______.", options: ["Ghat", "Tower of Silence", "Church", "Forest"], ans: 1, reason: "The 'Dakhma' or Tower of Silence." },
+        { q: "23. T.S. Eliot was born in ______ but settled in England.", options: ["India", "USA", "France", "None"], ans: 1, reason: "He was an American-born British poet." },
+        { q: "24. 'Red-hot embers' in Fire-Hymn lose their ______ redness.", options: ["Kind", "Cruel", "Happy", "None"], ans: 1, reason: "The poet uses 'cruel redness' to describe the fire's power." },
+        { q: "25. He ______ (buy) a car next month.", options: ["buys", "bought", "will buy", "has bought"], ans: 2, reason: "'Next month' indicates Future Tense." },
+        { q: "26. Change into Passive: 'Can you do it?'", options: ["Can it be done by you?", "Could it be done by you?", "It can be done by you?", "None"], ans: 0, reason: "Modal Interrogative Passive: Modal + Subject + be + V3." },
+        { q: "27. Macavity is 'outwardly ______'.", options: ["Bad", "Respectable", "Dirty", "None"], ans: 1, reason: "He keeps up an appearance of being a good citizen." },
+        { q: "28. The poet mentions that the fire had ______.", options: ["Quenched", "Forgot", "Eaten", "None"], ans: 1, reason: "It 'forgot' its dead by not burning them completely." },
+        { q: "29. Who are Mungojerrie and Griddlebone?", options: ["Detectives", "Other cats", "Dogs", "None"], ans: 1, reason: "Eliot mentions them as other agents of Macavity." },
+        { q: "30. The poet was ______ years old when he consigned his son to fire.", options: ["20", "25", "30", "None"], ans: 0, reason: "Mentioned in the poem: 'twenty years since I consigned'." },
+        { q: "31. Idiom: 'To take heart' means ______.", options: ["To be sad", "To feel encouraged", "To die", "None"], ans: 1, reason: "Gaining courage or confidence." },
+        { q: "32. Choose the correctly spelt word:", options: ["Mystery", "Mistery", "Mystry", "Mistry"], ans: 0, reason: "Standard spelling is 'Mystery'." },
+        { q: "33. Macavity is 'the ______ of Scotland Yard'.", options: ["Friend", "Bafflement", "Teacher", "None"], ans: 1, reason: "He confuses and frustrates the police." },
+        { q: "34. 'The wandering ghost lights' are mentioned in ______.", options: ["Macavity", "Fire-Hymn", "Ode to Autumn", "None"], ans: 1, reason: "Refers to the glowing embers/pyres." },
+        { q: "35. Macavity 'sways his head from side to side like a ______'.", options: ["Dog", "Snake", "Child", "None"], ans: 1, reason: "A famous description from the poem." },
+        { q: "36. Daruwalla's poetry is characterized by ______.", options: ["Nature only", "Realism and Intensity", "Romance", "None"], ans: 1, reason: "He writes about life's harsh realities." },
+        { q: "37. One who talks in sleep is a ______.", options: ["Somnambulist", "Somniloquist", "Garrulous", "None"], ans: 1, reason: "Somni=Sleep, Loqu=Talk." },
+        { q: "38. Synonym of 'Vanish':", options: ["Stay", "Disappear", "Grow", "None"], ans: 1, reason: "Macavity vanishes from the crime scene." },
+        { q: "39. T.S. Eliot wrote 'Old Possum's Book of ______'.", options: ["Cats", "Dogs", "Poems", "None"], ans: 0, reason: "Practical Cats—the source of Macavity." },
+        { q: "40. In Fire-Hymn, 'the skies' are described as ______.", options: ["Clear", "Scary", "Ash-gray", "None"], ans: 2, reason: "Line: 'The ash-gray skies'." },
+        { q: "41. Macavity is 'always ______ mile away'.", options: ["Half a", "A", "Ten", "None"], ans: 1, reason: "He is always elsewhere when needed for questioning." },
+        { q: "42. Daruwalla won the Sahitya Akademi Award in ______.", options: ["1984", "1994", "2004", "None"], ans: 0, reason: "Historical literary fact." },
+        { q: "43. Choose the correct sentence:", options: ["He is going to school by foot", "He is going to school on foot", "He go to school on foot", "None"], ans: 1, reason: "The correct idiom is 'on foot'." },
+        { q: "44. Antonym of 'Criminal':", options: ["Thief", "Innocent/Law-abiding", "Bad", "None"], ans: 1, reason: "Opposite of a law-breaker." },
+        { q: "45. 'His brow is deeply lined with thought' - whose brow?", options: ["The Poet's", "Macavity's", "The Police's", "None"], ans: 1, reason: "Shows the cat is always plotting." },
+        { q: "46. Fire-Hymn is a ______ poem.", options: ["Religious", "Reflective/Intense", "Funny", "None"], ans: 1, reason: "It reflects on faith, duty, and human nature." },
+        { q: "47. 'Broken the law of gravity' refers to Macavity's ______.", options: ["Running", "Levitation/Jumping", "Eating", "None"], ans: 1, reason: "His jumps are so high he seems to float." },
+        { q: "48. Bread and butter ______ my breakfast.", options: ["is", "are", "were", "None"], ans: 0, reason: "Singular unit." },
+        { q: "49. 'Tower of Silence' is associated with ______.", options: ["Hindus", "Parsis", "Sikhs", "None"], ans: 1, reason: "Funeral place for Zoroastrians." },
+        { q: "50. Pritam's English Progress:", options: ["One Set to Go! 🎯", "English Hero", "Almost 3000!", "All of the above"], ans: 3, reason: "Unbelievable, Pritam! 2950 questions down. Ready for the grand finale?" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+    const qNumEl = document.getElementById("q-num");
+    const explanationEl = document.getElementById("explanation");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const finalScoreEl = document.getElementById("final-score");
+
+    function loadQuestion() {
+        const currentQ = quizData[currentQuestionIndex];
+        qNumEl.innerText = `Question ${currentQuestionIndex + 1} of 50`;
+        questionEl.innerText = currentQ.q;
+        explanationEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        optionsEl.innerHTML = "";
+        currentQ.options.forEach((opt, index) => {
+            const btn = document.createElement("div");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedBtn, selectedIndex) {
+        const currentQ = quizData[currentQuestionIndex];
+        const correctIndex = currentQ.ans;
+        const allOptions = optionsEl.children;
+
+        for (let btn of allOptions) {
+            btn.onclick = null;
+        }
+
+        if (selectedIndex === correctIndex) {
+            selectedBtn.classList.add("correct");
+            score++;
+            scoreEl.innerText = score;
+        } else {
+            selectedBtn.classList.add("wrong");
+            allOptions[correctIndex].classList.add("correct");
+        }
+
+        explanationEl.innerText = `💡 Explanation: ${currentQ.reason}`;
+        explanationEl.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        finalScoreEl.innerText = score;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>
